@@ -74,12 +74,16 @@ ul.answers {
     border: 1px solid white;
     border-radius: 5px;
 }
+
 .answers:not(.answer) a:hover {
     background: rgba(0, 0, 0, 0.6);
 }
 .answers a.active {
     background: rgba(0, 0, 0, 0.6);
     animation: 0.5s blink ease-in-out;
+}
+.answers.answer a {
+    cursor: default;
 }
 footer {
   position: absolute;
@@ -168,9 +172,9 @@ footer a:hover {
   <script>
 const answers = document.querySelector('.answers');
 answers.addEventListener('click', (e) => {
+    e.preventDefault();
     const link = e.target.closest('a');
     if (link && !answers.classList.contains('answer')) {
-        e.preventDefault();
         link.classList.add('active');
         answers.classList.add('answer');
     }
