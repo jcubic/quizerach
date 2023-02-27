@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <%- include('../partials/head'); %>
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@v1.x/themes/prism-okaidia.min.css" rel="stylesheet" />
+</head>
+<body>
+  <%- include('../partials/header'); %>
+  <main>
+    <h1>Quiz Utrwalający Wiedzę</h1>
+    <div class="question"><%- question %></div>
+    <ul class="answers">
+      <% options.forEach(function(option) { %>
+        <li>
+          <a href="#">
+            <span class="icon">
+              <svg viewBox="0 0 5.5562501 7.40833">
+                <use xlink:href="#<%= option.icon %>"/>
+              </svg>
+            </span>
+            <%= option.label %>
+          </a>
+        </li>
+      <% }); %>
+    </ul>
+  </main>
+  <%- include('../partials/footer'); %>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@v1.x/components/prism-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@v1.x/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script>
+const answers = document.querySelector('.answers');
+const question = document.querySelector('.question');
+answers.addEventListener('click', (e) => {
+    e.preventDefault();
+    const link = e.target.closest('a');
+    if (link && !answers.classList.contains('answer')) {
+        link.classList.add('active');
+        answers.classList.add('answer');
+    }
+});
+  </script>
+</body>
+</html>

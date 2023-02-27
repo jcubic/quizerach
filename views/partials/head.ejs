@@ -1,0 +1,114 @@
+<meta charset="utf-8" />
+<title>Koduj Quiz App</title>
+<meta name="Description" content=""/>
+<link rel="shortcut icon" href=""/>
+<style>
+ body, html {
+     min-height: 100%;
+ }
+ html {
+     background: rgb(11,48,68);
+     background: linear-gradient(135deg, rgba(11,48,68,1) 0%, rgba(0,7,17,1) 100%);
+     color: white;
+     font-family: sans-serif;
+ }
+ body {
+     position: relative;
+     min-height: 100vh;
+     margin: 0;
+     padding: 10px;
+     box-sizing: border-box;
+ }
+ #icons {
+     display: none;
+ }
+ header img {
+     margin: 10px;
+ }
+ .icon {
+     width: 20px;
+     height: auto;
+     display: inline-block;
+ }
+ h1 {
+     text-align: center;
+ }
+ ul.answers, main .question {
+     max-width: 600px;
+     width: 100%;
+ }
+ main {
+     padding-bottom: 4em;
+ }
+ main > pre[class*=language-] {
+     box-sizing: border-box;
+ }
+ main .question {
+     margin: 1em auto;
+ }
+ ul.answers {
+     margin: 2em auto 0 auto;
+     list-style: none;
+     padding: 0;
+     display: flex;
+     justify-content: center;
+     flex-direction: column;
+     gap: 10px;
+ }
+ .answers a {
+     display: flex;
+     align-items: center;
+     color: inherit;
+     text-decoration: none;
+     gap: 10px;
+     padding: 10px 14px;
+     border: 1px solid white;
+     border-radius: 5px;
+ }
+
+ .answers:not(.answer) a:hover {
+     background: rgba(0, 0, 0, 0.6);
+ }
+ .answers a.active {
+     background: rgba(0, 0, 0, 0.6);
+     animation: 0.5s blink ease-in-out;
+ }
+ .answers.answer a {
+     cursor: default;
+ }
+ footer {
+     position: absolute;
+     left: 0;
+     right: 0;
+     bottom: 0;
+ }
+ footer p {
+     text-align: center;
+ }
+ footer a {
+     color: white;
+ }
+ footer a:hover {
+     color: #1E6BFF;
+ }
+ @media (max-width: 620px) {
+     header {
+         text-align: center;
+     }
+ }
+ @keyframes blink {
+     0% {
+         background: rgba(0, 0, 0, 0.6);
+         color: white;
+     }
+     50% {
+         background: rgba(255, 255, 255, 0.6);
+         color: black;
+     }
+     100% {
+         background: rgba(0, 0, 0, 0.6);
+         color: white;
+     }
+ }
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
