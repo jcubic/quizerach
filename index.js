@@ -33,6 +33,7 @@ czy powyższa funkcja w języku JavaScript to:
 `;
 
 app.use('/public', express.static('public'));
+app.use('/favicon', express.static('favicon'));
 
 app.get('/', function(req, res) {
     res.render('pages/index', {
