@@ -1,0 +1,68 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Answer {
+  answer_id   Int      @id @default(autoincrement())
+  user_id     Int
+  question_id Int
+  answer      String?  @db.Text
+  option_id   Int
+  Question    Question @relation(fields: [question_id], references: [question_id], onUpdate: Restrict, map: "Answer_ibfk_1")
+  user        User     @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "Answer_ibfk_2")
+  Option      Option   @relation(fields: [option_id], references: [option_id], onUpdate: Restrict, map: "Answer_ibfk_3")
+
+  @@index([option_id], map: "option_id")
+  @@index([question_id], map: "question_id")
+  @@index([user_id], map: "user_id")
+}
+
+model Option {
+  option_id   Int      @id @default(autoincrement())
+  question_id Int
+  label       String
+  Answer      Answer[]
+  Question    Question @relation(fields: [question_id], references: [question_id], onUpdate: Restrict, map: "Option_ibfk_1")
+
+  @@index([question_id], map: "question_id")
+}
+
+model Poll {
+  poll_id  Int        @id @default(autoincrement())
+  name     String     @db.VarChar(255)
+  slug     String     @db.VarChar(255)
+  Question Question[]
+}
+
+model Question {
+  question_id Int      @id @default(autoincrement())
+  poll_id     Int
+  intro_text  String   @db.Text
+  outro_text  String   @db.Text
+  Answer      Answer[]
+  Option      Option[]
+  Poll        Poll     @relation(fields: [poll_id], references: [poll_id], onUpdate: Restrict, map: "Question_ibfk_1")
+
+  @@index([poll_id], map: "poll_id")
+}
+
+model User {
+  user_id   Int         @id @default(autoincrement())
+  email     String?     @db.VarChar(256)
+  token     String?     @db.VarChar(40)
+  Answer    Answer[]
+  user_pool User_Pool[]
+}
+
+model User_Pool {
+  user_pool_id Int  @id @default(autoincrement())
+  user_id      Int
+  user         User @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "user_pool_ibfk_1")
+
+  @@index([user_id], map: "user_id")
+}
