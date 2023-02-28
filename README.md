@@ -1,7 +1,8 @@
 # Quizerach - Quiz App
 
-![Quizerach Logo](/assets/logo.svg)
-
+<p align="center">
+  <img src="/assets/logo.svg" alt="Quizerach Project Logo"/>
+</p>
 
 ![Quiz Screenshot](/assets/screenshot.png)
 
