@@ -1,6 +1,5 @@
 const express = require('express');
 const session = require('express-session');
-const sqlite3 = require('sqlite3').verbose();
 const { marked } = require('marked');
 
 const send_email = require('./email');
