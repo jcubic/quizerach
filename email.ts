@@ -1,12 +1,8 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 
-const {
-    email: {
-        host,
-        user,
-        pass
-    }
-} = require('./config.js');
+import { email } from './config';
+
+const { host, user, pass } = email;
 
 const transporter = nodemailer.createTransport({
     host,
@@ -18,7 +14,13 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-function send({email, subject, body}) {
+type SentT = {
+    email: string;
+    subject: string;
+    body: string;
+};
+
+export default function send({email, subject, body}: SentT) {
 
     const mailOptions = {
         from: 'no-reply@koduj.org',

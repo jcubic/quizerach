@@ -53,7 +53,7 @@ model Question {
 
 model User {
   user_id   Int         @id @default(autoincrement())
-  email     String?     @db.VarChar(256)
+  email     String?     @unique @db.VarChar(256)
   token     String?     @db.VarChar(40)
   Answer    Answer[]
   user_pool User_Pool[]
