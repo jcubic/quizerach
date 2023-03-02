@@ -14,5 +14,8 @@ and word Quiz. You pronounce the name similar to the name of the
 The Kwisatz Haderach possessed a heightened consciousness that allowed him to access future memories and
 see different possible outcomes, giving him the ability to predict the future and provide answers to complex questions and riddles.
 
+(above paragraph based on ChatGPT).
+
 ## License
-Copyright (C) 2023 [Jakub T. Jankiewicz](https://jakub.jankiewicz.org)
+Copyright (C) 2023 [Jakub T. Jankiewicz](https://jakub.jankiewicz.org)<br/>
+Released under GNU AGPL v3 or later
