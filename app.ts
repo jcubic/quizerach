@@ -40,6 +40,9 @@ declare global {
         interface Request {
             with_redirect(url: string): string;
         }
+        interface Response {
+            url_redirect(next: string): void;
+        }
     }
 }
 
@@ -62,6 +65,9 @@ function with_redirect(req: Request, res: Response, next: NextFunction) {
     }
     req.with_redirect = function(url: string) {
         return `${url}${redirect}`;
+    };
+    res.url_redirect = function(next: string) {
+        res.redirect(302, decodeURIComponent(next));
     };
     next();
 }
@@ -105,13 +111,19 @@ app.get('/login(/:token)?', async function(req: Request, res: Response, next: Ne
             where: { token: token }
         });
         if (user && is_string(user.email)) {
+            if (user?.token_expiration >= new Date()) {
+                res.render('pages/debug', {
+                    html: `<p>Your token expired</p>`
+                });
+                return;
+            }
             req.session.email = user.email;
             req.session.save(function (err) {
                 if (err) {
                     next(err);
                 }
                 if (is_string(req.query.next)) {
-                    res.redirect(302, decodeURIComponent(req.query.next));
+                    res.url_redirect(req.query.next);
                 } else {
                     res.render('pages/debug', {
                         html: `<p>${user?.email}</p>`
@@ -135,15 +147,19 @@ app.post('/login', async function(req: Request, res: Response) {
     if (req.body.email) {
         const email = req.body.email;
         const token = unique_token();
+        const now = new Date();
+        const token_expiration  = new Date(now.getTime() + 60 * 60 * 1000);
         await prisma.user.upsert({
             where: {
                 email
             },
             update: {
-                token
+                token,
+                token_expiration
             },
             create: {
                 token,
+                token_expiration,
                 email
             }
         });

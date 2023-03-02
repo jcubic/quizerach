@@ -17,3 +17,7 @@ export function unique_token() {
 export function is_string(arg: any): arg is string {
     return typeof arg === 'string';
 }
+
+export function is_date(arg: any): arg is Date {
+    return arg instanceof Date;
+}
