@@ -6,12 +6,14 @@ import { PrismaClient, Question, Option, User } from "@prisma/client";
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 
-import { unique_token, is_string } from './utils';
+import { unique_token, is_string, is_valid_token, origin } from './utils';
 import send_email from './email';
 
 dotenv.config();
 
+const port = process.env.PORT;
 const app = express();
+
 const prisma = new PrismaClient();
 
 app.set('view engine', 'ejs');
@@ -44,14 +46,6 @@ declare global {
             url_redirect(next: string): void;
         }
     }
-}
-
-const port = process.env.PORT;
-
-function origin(req: Request) {
-    const host = req.get('host');
-    const protocol = req.protocol;
-    return `${protocol}://${host}`;
 }
 
 function next_url(req: Request) {
@@ -98,7 +92,17 @@ app.get('/quiz/:slug', is_auth, async function(req: Request, res: Response) {
     }
 });
 
-app.get('/debug', function(req: Request, res: Response) {
+app.get('/debug', async function(req: Request, res: Response) {
+    if (is_string(req.query.email)) {
+        await prisma.user.update({
+            where: {
+                email: req.query.email
+            },
+            data: {
+                token_expiration: new Date()
+            }
+        });
+    }
     res.render('pages/debug', {
         html: `<a href="${origin(req)}">host</a>`
     });
@@ -111,9 +115,9 @@ app.get('/login(/:token)?', async function(req: Request, res: Response, next: Ne
             where: { token: token }
         });
         if (user && is_string(user.email)) {
-            if (user?.token_expiration >= new Date()) {
+            if (is_valid_token(user.token_expiration)) {
                 res.render('pages/debug', {
-                    html: `<p>Your token expired</p>`
+                    html: `<p>Twój magiczny link stracił ważność!</p>`
                 });
                 return;
             }
