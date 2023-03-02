@@ -6,7 +6,7 @@ import { PrismaClient, Question, Option, User } from "@prisma/client";
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 
-import { unique_token } from './utils';
+import { unique_token, is_string } from './utils';
 import send_email from './email';
 
 dotenv.config();
@@ -97,10 +97,6 @@ app.get('/debug', function(req: Request, res: Response) {
         html: `<a href="${origin(req)}">host</a>`
     });
 });
-
-function is_string(arg: any): arg is string {
-    return typeof arg === 'string';
-}
 
 app.get('/login(/:token)?', async function(req: Request, res: Response, next: NextFunction) {
     const token = req.params.token;

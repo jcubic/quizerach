@@ -13,3 +13,7 @@ export function unique_token() {
     shasum.update(microtime().toString());
     return shasum.digest('hex');
 }
+
+export function is_string(arg: any): arg is string {
+    return typeof arg === 'string';
+}
