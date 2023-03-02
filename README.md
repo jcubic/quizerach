@@ -11,5 +11,8 @@
 and word Quiz. You pronounce the name similar to the name of the
 [male Bene Gesserit from Frank Herbert novel Dune](https://en.wikipedia.org/wiki/Kwisatz_Haderach).
 
+The Kwisatz Haderach's possesses a heightened consciousness that allowed him to access future memories and
+see different possible outcomes, giving him the ability to predict the future and provide answers to complex questions and riddles.
+
 ## License
 Copyright (C) 2023 [Jakub T. Jankiewicz](https://jakub.jankiewicz.org)
