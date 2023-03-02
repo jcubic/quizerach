@@ -52,11 +52,12 @@ model Question {
 }
 
 model User {
-  user_id   Int         @id @default(autoincrement())
-  email     String?     @unique @db.VarChar(256)
-  token     String?     @db.VarChar(40)
-  Answer    Answer[]
-  user_pool User_Pool[]
+  user_id          Int         @id @default(autoincrement())
+  email            String?     @unique @db.VarChar(256)
+  token            String?     @db.VarChar(40)
+  token_expiration DateTime?
+  Answer           Answer[]
+  user_pool        User_Pool[]
 }
 
 model User_Pool {
