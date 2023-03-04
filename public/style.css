@@ -107,6 +107,7 @@ footer a:hover {
 }
 #login {
     --color: #FF9C1E;
+    --error: #FF1E7B;
     display: flex;
     flex-direction: column;
     align-items: end;
@@ -150,6 +151,9 @@ footer a:hover {
 #login input[type="submit"]:active {
     position: relative;
     top: 1px;
+}
+#login .error {
+    color: var(--error);
 }
 .box {
     width: 400px;
