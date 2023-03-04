@@ -11,6 +11,9 @@ import send_email from './email';
 
 import { port, secret, admin } from './config';
 
+const ADMIN = '/admin';
+const ADMIN_LOGIN = `${ADMIN}/login`;
+
 const app = express();
 
 const prisma = new PrismaClient();
@@ -74,7 +77,7 @@ function is_auth(req: Request, res: Response, next: NextFunction) {
 
 function is_admin(req: Request, res: Response, next: NextFunction) {
     if (!req.session.admin) {
-        return res.redirect(302, `/qs-login?next=${next_url(req)}`);
+        return res.redirect(302, `${ADMIN_LOGIN}?next=${next_url(req)}`);
     }
     next();
 }
@@ -98,16 +101,11 @@ app.get('/quiz/:slug', is_auth, async function(req: Request, res: Response) {
     }
 });
 
-app.get('/qs-login', function(req: Request, res: Response) {
+app.get(ADMIN_LOGIN, function(req: Request, res: Response) {
     res.render('pages/login', { });
 });
 
-app.post('/qs-login', function(req: Request, res: Response, next: NextFunction) {
-    console.log({
-        user: req.body.user,
-        pass: req.body.pass,
-        admin
-    });
+app.post(ADMIN_LOGIN, function(req: Request, res: Response, next: NextFunction) {
     if (req.body.user === admin.name && req.body.pass == admin.pass) {
         req.session.admin = true;
         req.session.save(function (err) {
@@ -117,7 +115,7 @@ app.post('/qs-login', function(req: Request, res: Response, next: NextFunction) 
             if (is_string(req.query.next)) {
                 res.url_redirect(req.query.next);
             } else {
-                res.url_redirect('/qs-admin');
+                res.url_redirect('/admin');
             }
         });
     } else {
@@ -125,7 +123,7 @@ app.post('/qs-login', function(req: Request, res: Response, next: NextFunction) 
     }
 });
 
-app.get('/qs-admin', is_admin, function(req: Request, res: Response) {
+app.get(ADMIN, is_admin, function(req: Request, res: Response) {
     res.render('pages/debug', {
         html: `Admin Panel`
     });
