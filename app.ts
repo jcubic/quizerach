@@ -9,9 +9,8 @@ import bodyParser from 'body-parser';
 import { unique_token, is_string, is_valid_token, origin } from './utils';
 import send_email from './email';
 
-dotenv.config();
+import { port, secret, admin } from './config';
 
-const port = process.env.PORT;
 const app = express();
 
 const prisma = new PrismaClient();
@@ -21,7 +20,7 @@ app.set('views', path.join(__dirname, 'views'));
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
-    secret: process.env.SESSION_SECRET as string,
+    secret,
     resave: false,
     saveUninitialized: true,
     cookie: { httpOnly: true, maxAge: 60*60*1000 },
@@ -32,7 +31,7 @@ app.use(with_redirect);
 
 declare module "express-session" {
     interface SessionData {
-        user: User;
+        admin: boolean;
         email: string;
     }
 }
@@ -73,6 +72,13 @@ function is_auth(req: Request, res: Response, next: NextFunction) {
     next();
 }
 
+function is_admin(req: Request, res: Response, next: NextFunction) {
+    if (!req.session.admin) {
+        return res.redirect(302, `/qs-login?next=${next_url(req)}`);
+    }
+    next();
+}
+
 app.use('/public', express.static('public'));
 app.use('/favicon', express.static('favicon'));
 
@@ -90,6 +96,39 @@ app.get('/quiz/:slug', is_auth, async function(req: Request, res: Response) {
     } else {
         res.send('404');
     }
+});
+
+app.get('/qs-login', function(req: Request, res: Response) {
+    res.render('pages/login', { });
+});
+
+app.post('/qs-login', function(req: Request, res: Response, next: NextFunction) {
+    console.log({
+        user: req.body.user,
+        pass: req.body.pass,
+        admin
+    });
+    if (req.body.user === admin.name && req.body.pass == admin.pass) {
+        req.session.admin = true;
+        req.session.save(function (err) {
+            if (err) {
+                next(err);
+            }
+            if (is_string(req.query.next)) {
+                res.url_redirect(req.query.next);
+            } else {
+                res.url_redirect('/qs-admin');
+            }
+        });
+    } else {
+        res.render('pages/login', { error: 'Wrong username or password!' });
+    }
+});
+
+app.get('/qs-admin', is_admin, function(req: Request, res: Response) {
+    res.render('pages/debug', {
+        html: `Admin Panel`
+    });
 });
 
 app.get('/debug', async function(req: Request, res: Response) {

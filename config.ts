@@ -14,3 +14,11 @@ export const mysql = {
     host: process.env.MYSQL_HOST,
     pass: process.env.MYSQL_PASS
 };
+
+export const admin = {
+    name: process.env.ADMIN_NAME,
+    pass: process.env.ADMIN_PASS
+};
+
+export const port = process.env.PORT;
+export const secret = process.env.SESSION_SECRET as string;

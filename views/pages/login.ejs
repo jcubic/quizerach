@@ -1,0 +1,77 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <%- include('../partials/head', { title: 'Koduj Quiz App' }); %>
+  <link href="https://cdn.jsdelivr.net/npm/prismjs@v1.x/themes/prism-okaidia.min.css" rel="stylesheet" />
+<style>
+#login {
+    --color: #FF9C1E;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 5px;
+    width: 270px;
+    font-size: 14px;
+}
+#login > div {
+    display: flex;
+}
+#login label {
+    background: var(--color);
+    color: black;
+    padding: 5px 10px;
+    width: 80px;
+    border-radius: 5px 0 0 5px;
+    text-align: right;
+}
+#login label::after {
+    content: ":";
+    float: right;
+}
+#login input:not([type="submit"]) {
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border-radius: 0 5px 5px 0;
+    border: none;
+}
+#login input[type="submit"] {
+    background: var(--color);
+    color: black;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+}
+#login input[type="submit"]:hover {
+    background: #DC7F09
+}
+#login input[type="submit"]:active {
+    position: relative;
+    top: 1px;
+}
+</style>
+</head>
+<body>
+  <%- include('../partials/header'); %>
+  <main>
+    <form action="/qs-login" method="POST" id="login">
+      <div>
+        <label for="user">
+          user
+        </label>
+        <input name="user" id="user" />
+      </div>
+      <div>
+        <label for="pass">
+          password
+        </label>
+        <input type="password" name="pass" id="pass" />
+      </div>
+      <input type="submit" value="login" />
+      <% if (typeof error == 'string') { %>
+        <%= error %>
+      <% } %>
+    </form>
+  </main>
+  <%- include('../partials/footer'); %>
+</body>
+</html>
