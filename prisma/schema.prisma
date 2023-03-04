@@ -34,9 +34,17 @@ model Option {
 
 model Poll {
   poll_id  Int        @id @default(autoincrement())
+  set_id   Int
   name     String     @db.VarChar(255)
   slug     String     @db.VarChar(255)
   Question Question[]
+  poll_set Poll_Set   @relation(fields: [set_id], references: [poll_set_id])
+}
+
+model Poll_Set {
+  poll_set_id Int    @id @default(autoincrement())
+  name        String @db.VarChar(255)
+  Poll        Poll[]
 }
 
 model Question {
