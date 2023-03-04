@@ -1,0 +1,170 @@
+body, html {
+    min-height: 100%;
+}
+html {
+    background: rgb(11,48,68);
+    background: linear-gradient(135deg, rgba(11,48,68,1) 0%, rgba(0,7,17,1) 100%);
+    color: white;
+    font-family: sans-serif;
+}
+body {
+    position: relative;
+    min-height: 100vh;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+}
+#icons {
+    display: none;
+}
+header img {
+    margin: 10px;
+}
+.icon {
+    width: 20px;
+    height: auto;
+    display: inline-block;
+}
+h1 {
+    text-align: center;
+}
+ul.answers, main .question, main > p, main > form, main > pre {
+    max-width: 600px;
+    width: 100%;
+}
+main {
+    padding-bottom: 4em;
+}
+main > pre[class*=language-] {
+    box-sizing: border-box;
+}
+main .question, main > p, main > form {
+    margin: 1em auto;
+}
+ul.answers {
+    margin: 2em auto 0 auto;
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 10px;
+}
+.answers a {
+    display: flex;
+    align-items: center;
+    color: inherit;
+    text-decoration: none;
+    gap: 10px;
+    padding: 10px 14px;
+    border: 1px solid white;
+    border-radius: 5px;
+}
+
+.answers:not(.answer) a:hover {
+    background: rgba(0, 0, 0, 0.6);
+}
+.answers a.active {
+    background: rgba(0, 0, 0, 0.6);
+    animation: 0.5s blink ease-in-out;
+}
+.answers.answer a {
+    cursor: default;
+}
+footer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+footer p {
+    text-align: center;
+}
+footer a {
+    color: white;
+}
+footer a:hover {
+    color: #1E6BFF;
+}
+@media (max-width: 620px) {
+    header {
+        text-align: center;
+    }
+}
+@keyframes blink {
+    0% {
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+    }
+    50% {
+        background: rgba(255, 255, 255, 0.6);
+        color: black;
+    }
+    100% {
+        background: rgba(0, 0, 0, 0.6);
+        color: white;
+    }
+}
+#login {
+    --color: #FF9C1E;
+    display: flex;
+    flex-direction: column;
+    align-items: end;
+    gap: 6px;
+    width: 330px;
+}
+#login, #login input {
+    font-size: 18px;
+}
+#login > div {
+    display: flex;
+}
+#login label {
+    background: var(--color);
+    color: black;
+    padding: 5px 10px;
+    width: 90px;
+    border-radius: 5px 0 0 5px;
+    text-align: right;
+}
+#login label::after {
+    content: ":";
+    float: right;
+}
+#login input:not([type="submit"]) {
+    padding: 5px 10px;
+    box-sizing: border-box;
+    border-radius: 0 5px 5px 0;
+    border: none;
+}
+#login input[type="submit"] {
+    background: var(--color);
+    color: black;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+}
+#login input[type="submit"]:hover {
+    background: #DC7F09
+}
+#login input[type="submit"]:active {
+    position: relative;
+    top: 1px;
+}
+.box {
+    width: 400px;
+    display: flex;
+    padding: 20px 30px 40px 30px;
+    background: rgba(0,0,0, 0.4);
+    border-radius: 10px;
+    flex-direction: column;
+    align-items: center;
+}
+.center-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: calc(100vh - 102px - 50px);
+    box-sizing: border-box;
+}
