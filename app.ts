@@ -92,21 +92,28 @@ app.use('/favicon', express.static('favicon'));
 app.get('/quiz/:slug', is_auth, async function(req: Request, res: Response) {
     const poll = await prisma.poll.findFirst({
         where: { slug: req.params.slug },
-        include: {
+        select: {
+            name: true,
+            slug: true,
+            set: true,
             Question: {
                 include: { Option: true }
             }
         }
     });
     if (poll) {
-        render_quiz(res, poll.Question[0]);
+        if (poll.Question.length) {
+            render_quiz(res, poll.set.name, poll.Question[0]);
+        } else {
+            res.send('This quiz is empty');
+        }
     } else {
         res.send('404');
     }
 });
 
 app.get(ADMIN_LOGIN, function(req: Request, res: Response) {
-    res.render('pages/login', { });
+    res.render('pages/admin_login', { });
 });
 
 app.post(ADMIN_LOGIN, function(req: Request, res: Response, next: NextFunction) {
@@ -123,7 +130,7 @@ app.post(ADMIN_LOGIN, function(req: Request, res: Response, next: NextFunction) 
             }
         });
     } else {
-        res.render('pages/login', { error: 'Wrong username or password!' });
+        res.render('pages/admin_login', { error: 'Wrong username or password!' });
     }
 });
 
@@ -157,7 +164,7 @@ app.get('/login(/:token)?', async function(req: Request, res: Response, next: Ne
         });
         if (user && is_string(user.email)) {
             if (is_valid_token(user.token_expiration)) {
-                res.render('pages/debug', {
+                res.render('pages/login', {
                     html: `<p>Twój magiczny link stracił ważność!</p>`
                 });
                 return;
@@ -170,7 +177,7 @@ app.get('/login(/:token)?', async function(req: Request, res: Response, next: Ne
                 if (is_string(req.query.next)) {
                     res.url_redirect(req.query.next);
                 } else {
-                    res.render('pages/debug', {
+                    res.render('pages/login', {
                         html: `<p>${user?.email}</p>`
                     });
                 }
@@ -178,12 +185,8 @@ app.get('/login(/:token)?', async function(req: Request, res: Response, next: Ne
         }
     } else {
         const url = req.with_redirect('/login');
-        res.render('pages/debug', {
-            html: `<h1>Login</h1>
-                   <form action="${url}" method="POST">
-                     <input name="email"/>
-                     <input type="submit" value="login"/>
-                   </form>`
+        res.render('pages/login', {
+            action: url
         });
     }
 });
@@ -210,13 +213,13 @@ app.post('/login', async function(req: Request, res: Response) {
         });
 
         const url = origin(req) + req.with_redirect(`/login/${token}`);
-        const body = `Use this url to login to Koduj Quiz ${url}`;
+        const body = `Use this url to login to Koduj Quiz:\n\n${url}`;
         await send_email({
             email,
             subject: 'Magiczny Link do logowania',
             body
         });
-        res.render('pages/debug', {
+        res.render('pages/login', {
             html: `<p>Została wysłana do ciebie wiadomość z magicznym linkiem,
                       dzięki któremu zalogujesz do quizu.</p>`
         });
@@ -227,9 +230,10 @@ app.post('/login', async function(req: Request, res: Response) {
     }
 });
 
-function render_quiz(res: Response, question: Question & {Option: Option[]}) {
+function render_quiz(res: Response, title: string, question: Question & {Option: Option[]}) {
     res.render('pages/index', {
         question: marked.parse(question.intro_text),
+        title,
         options: question.Option.map(({ label }, i) => {
             const char = String.fromCharCode(97 + i);
             return {

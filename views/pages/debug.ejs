@@ -6,8 +6,8 @@
 </head>
 <body>
   <%- include('../partials/header'); %>
-  <main>
-  <%- html %>
+  <main<% if (typeof class_name === 'string') { %> class="<%= class_name %>"<% } %>>
+    <%- html %>
   </main>
   <%- include('../partials/footer'); %>
 </body>

@@ -1,31 +1,29 @@
 <!DOCTYPE HTML>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-  <%- include('../partials/head', { title: 'Quiz Admin Login' }); %>
+  <%- include('../partials/head', { title: 'Quiz Auth' }); %>
 </head>
 <body>
   <%- include('../partials/header'); %>
   <main class="center-box">
     <div class="box">
-      <h2>Admin Login</h2>
-      <form method="POST" id="login">
-        <div>
-          <label for="user">
-            user
-          </label>
-          <input name="user" id="user" />
-        </div>
-        <div>
-          <label for="pass">
-            password
-          </label>
-          <input type="password" name="pass" id="pass" />
-        </div>
-        <input type="submit" value="login" />
-        <% if (typeof error == 'string') { %>
-          <p class="error"><%= error %></p>
-        <% } %>
-      </form>
+      <h2>Login</h2>
+      <% if (typeof html === 'undefined') { %>
+        <form method="POST" action="<%= action %>" id="login">
+          <div>
+            <label for="email">
+              email
+            </label>
+            <input name="email" id="email" />
+          </div>
+          <input type="submit" value="login" />
+          <% if (typeof error == 'string') { %>
+            <p class="error"><%= error %></p>
+          <% } %>
+        </form>
+      <% } else { %>
+        <%- html %>
+      <% } %>
     </div>
   </main>
   <%- include('../partials/footer'); %>

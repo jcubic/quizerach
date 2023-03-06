@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <%- include('../partials/head', { title: 'Quiz Admin Login' }); %>
+</head>
+<body>
+  <%- include('../partials/header'); %>
+  <main class="center-box">
+    <div class="box">
+      <h2>Admin Login</h2>
+      <form method="POST" id="login">
+        <div>
+          <label for="user">
+            user
+          </label>
+          <input name="user" id="user" />
+        </div>
+        <div>
+          <label for="pass">
+            password
+          </label>
+          <input type="password" name="pass" id="pass" />
+        </div>
+        <input type="submit" value="login" />
+        <% if (typeof error == 'string') { %>
+          <p class="error"><%= error %></p>
+        <% } %>
+      </form>
+    </div>
+  </main>
+  <%- include('../partials/footer'); %>
+</body>
+</html>

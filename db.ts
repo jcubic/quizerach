@@ -22,23 +22,6 @@ this is the declaration of the function
 (async () => {
 
     const poll = await prisma.poll.findFirst({
-        where: { slug: 'lesson-01' },
-        include: {
-            Question: {
-                include: { Option: true },
-            },
-        },
-    });
-
-    console.log(poll);
-
-    await prisma.$disconnect();
-
-
-    return;
-    /*
-
-    const poll = await prisma.poll.findFirst({
         where: {
             slug: 'lesson-01'
         }
@@ -58,6 +41,42 @@ this is the declaration of the function
                 }
             }
         });
+    }
+        /*
+
+    const poll_set = await prisma.set.create({
+        data: {
+            name: 'Koduj Quiz Utrwalający',
+            Poll: {
+                create: {
+                    slug: 'lesson-01',
+                    name: 'Lekcja 01'
+                }
+            }
+        }
+    });
+
+    console.log(poll_set);
+    return;
+
+    const poll = await prisma.poll.findFirst({
+        where: { slug: 'lesson-01' },
+        include: {
+            Question: {
+                include: { Option: true },
+            },
+        },
+    });
+
+    console.log(poll);
+
+    await prisma.$disconnect();
+
+
+    return;
+    /*
+
+    
         /*
           const poll = await prisma.poll.create({
           data: {
