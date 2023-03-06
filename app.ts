@@ -2,13 +2,16 @@ import path from 'path';
 import express, { Request, Response, NextFunction } from 'express';
 import session from 'express-session';
 import { marked } from 'marked';
-import { PrismaClient, Question, Option, User } from "@prisma/client";
-import dotenv from 'dotenv';
+import { PrismaClient, Question, Option } from "@prisma/client";
 import bodyParser from 'body-parser';
 
-import { unique_token, is_string, is_valid_token, origin } from './utils';
+import {
+    unique_token,
+    is_string,
+    is_valid_token,
+    origin
+} from './utils';
 import send_email from './email';
-
 import { port, secret, admin } from './config';
 
 const ADMIN = '/admin';
@@ -25,6 +28,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
     secret,
     resave: false,
+    genid: unique_token,
     saveUninitialized: true,
     cookie: { httpOnly: true, maxAge: 60*60*1000 },
     name: 'QS_'
