@@ -1,18 +1,8 @@
-import crypto from 'crypto';
 import type { Request } from 'express';
-
-const time_start = performance.timing ?
-      performance.timing.navigationStart :
-      performance.timeOrigin;
-
-export function microtime() {
-    return (performance.now() + time_start) * 1000;
-}
+import { v1 as uuid } from "uuid";
 
 export function unique_token() {
-    const shasum = crypto.createHash('sha1');
-    shasum.update(microtime().toString());
-    return shasum.digest('hex');
+    return uuid();
 }
 
 export function is_string(arg: any): arg is string {
