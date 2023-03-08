@@ -89,7 +89,7 @@ function is_admin(req: Request, res: Response, next: NextFunction) {
 app.use('/public', express.static('public'));
 app.use('/favicon', express.static('favicon'));
 
-app.get('/quiz/:slug', is_auth, async function(req: Request, res: Response) {
+app.get('/quiz/:slug', /* is_auth, */ async function(req: Request, res: Response) {
     const poll = await prisma.poll.findFirst({
         where: { slug: req.params.slug },
         select: {
@@ -103,7 +103,8 @@ app.get('/quiz/:slug', is_auth, async function(req: Request, res: Response) {
     });
     if (poll) {
         if (poll.Question.length) {
-            render_quiz(res, poll.set.name, poll.Question[0]);
+            console.log(poll.Question);
+            render_quiz(res, poll.set.name, poll.Question, 0);
         } else {
             res.send('This quiz is empty');
         }
@@ -230,10 +231,19 @@ app.post('/login', async function(req: Request, res: Response) {
     }
 });
 
-function render_quiz(res: Response, title: string, question: Question & {Option: Option[]}) {
+type Questions = Array<Question & {Option: Option[]}>;
+
+function render_quiz(res: Response, title: string, questions: Questions, index: number) {
+
+    const question = questions[index];
+
     res.render('pages/index', {
         question: marked.parse(question.intro_text),
         title,
+        progress: {
+            index,
+            max: questions.length
+        },
         options: question.Option.map(({ label }, i) => {
             const char = String.fromCharCode(97 + i);
             return {

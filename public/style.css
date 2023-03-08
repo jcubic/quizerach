@@ -172,3 +172,44 @@ footer a:hover {
     height: calc(100vh - 102px - 50px);
     box-sizing: border-box;
 }
+
+.progress {
+    margin-bottom: 3em;
+    display: flex;
+    justify-content: center;
+    --line-width: 4px;
+    --color: #ff9c1e;
+}
+.progress ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+}
+.progress svg {
+    width: 20px;
+}
+.progress svg use {
+    fill: var(--color);
+}
+.progress li::before, .progress li:last-child::after {
+    content: "";
+    display: inline-block;
+    height: var(--line-width);
+    background: var(--color);
+    width: 100px;
+}
+.progress li {
+    margin: 0;
+    display: flex;
+    align-items: center;
+}
+.progress li.selected,
+.progress li.selected + li::before,
+.progress li:first-child:not(.selected)::before {
+    --color: #1e6bff;
+}
+.progress li > span {
+    position: relative;
+    display: flex;
+}

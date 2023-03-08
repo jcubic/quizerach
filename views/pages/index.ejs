@@ -8,6 +8,18 @@
   <%- include('../partials/header'); %>
   <main>
     <h1><%= title %></h1>
+    <div class="progress">
+      <ul>
+      <% for (let i = 0; i < progress.max; ++i) { %>
+        <li<% if (i < progress.index) { %>class="selected"<% } %>>
+            <span>
+                <svg viewBox="0 0 5.5562501 7.40833">
+                    <use xlink:href="#num_<%= i + 1 %>"/>
+                </svg>
+            </span>
+        </li>
+      <% } %>
+    </div>
     <div class="question"><%- question %></div>
     <ul class="answers">
       <% options.forEach(function(option) { %>
