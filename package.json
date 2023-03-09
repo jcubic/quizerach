@@ -4,7 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint . --ext .ts"
+    "lint": "eslint . --ext .ts",
+    "valid": "npx depngn 16"
   },
   "dependencies": {
     "@prisma/client": "4.11.0",
