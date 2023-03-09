@@ -89,7 +89,7 @@ function is_admin(req: Request, res: Response, next: NextFunction) {
 app.use('/public', express.static('public'));
 app.use('/favicon', express.static('favicon'));
 
-app.get('/quiz/:slug', /* is_auth, */ async function(req: Request, res: Response) {
+app.get('/quiz/:slug', is_auth, async function(req: Request, res: Response) {
     const poll = await prisma.poll.findFirst({
         where: { slug: req.params.slug },
         select: {
