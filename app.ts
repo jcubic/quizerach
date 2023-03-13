@@ -89,9 +89,39 @@ function is_admin(req: Request, res: Response, next: NextFunction) {
 app.use('/public', express.static('public'));
 app.use('/favicon', express.static('favicon'));
 
-app.get('/quiz/:slug', is_auth, async function(req: Request, res: Response) {
+app.get('/set/:id?', async function(req: Request, res: Response) {
+    if (req.params.id) {
+        const id = +req.params.id;
+        const poll_set = await prisma.set.findFirst({
+            where: { set_id: id },
+            select: {
+                Poll: true
+            }
+        });
+        if (poll_set) {
+            res.render('pages/debug', {
+                html: '<ul>' + poll_set.Poll.map(poll => {
+                    const url = `/quiz/${poll.poll_id}/${poll.slug}`;
+                    return `<li><a href="${url}">${poll.name}</a></li>`;
+                }) + '</ul>'
+            });
+        } else {
+            res.send('404');
+        }
+    } else {
+        const sets = await prisma.set.findMany();
+        res.render('pages/debug', {
+            html: '<ul>' + sets.map(set => {
+                return `<li><a href="/set/${set.set_id}">${set.name}</a></li>`;
+            }) + '</ul>'
+        });
+    }
+});
+
+app.get('/quiz/:id/:slug?', /* is_auth, */ async function(req: Request, res: Response) {
+    const poll_id = +req.params.id;
     const poll = await prisma.poll.findFirst({
-        where: { slug: req.params.slug },
+        where: { poll_id },
         select: {
             name: true,
             slug: true,
@@ -102,8 +132,9 @@ app.get('/quiz/:slug', is_auth, async function(req: Request, res: Response) {
         }
     });
     if (poll) {
-        if (poll.Question.length) {
-            console.log(poll.Question);
+        if (poll.slug !== req.params.slug) {
+            res.redirect(301, `/quiz/${poll_id}/${poll.slug}`);
+        } else if (poll.Question.length) {
             render_quiz(res, poll.set.name, poll.Question, 0);
         } else {
             res.send('This quiz is empty');
@@ -111,6 +142,10 @@ app.get('/quiz/:slug', is_auth, async function(req: Request, res: Response) {
     } else {
         res.send('404');
     }
+});
+
+app.post('/answer/:slug', async function(req: Request, res: Response) {
+    
 });
 
 app.get(ADMIN_LOGIN, function(req: Request, res: Response) {
