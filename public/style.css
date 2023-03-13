@@ -28,7 +28,12 @@ header img {
 h1 {
     text-align: center;
 }
-ul.answers, main .question, main > p, main > form, main > pre {
+ul.answers,
+main .question,
+main > p,
+main > form,
+main > .footer,
+main > pre {
     max-width: 600px;
     width: 100%;
 }
@@ -38,7 +43,10 @@ main {
 main > pre[class*=language-] {
     box-sizing: border-box;
 }
-main .question, main > p, main > form {
+main .question,
+main > p,
+main > form,
+main > .footer {
     margin: 1em auto;
 }
 ul.answers {
@@ -59,8 +67,18 @@ ul.answers {
     padding: 10px 14px;
     border: 1px solid white;
     border-radius: 5px;
+    flex-grow: 1;
 }
-
+.answers li {
+    position: relative;
+}
+.answers .test {
+    width: 30px;
+    margin: 10px;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
 .answers:not(.answer) a:hover {
     background: rgba(0, 0, 0, 0.6);
 }
@@ -105,9 +123,11 @@ footer a:hover {
         color: white;
     }
 }
-#login {
+:root {
     --color: #FF9C1E;
     --error: #FF1E7B;
+}
+#login {
     display: flex;
     flex-direction: column;
     align-items: end;
@@ -138,19 +158,23 @@ footer a:hover {
     border-radius: 0 5px 5px 0;
     border: none;
 }
-#login input[type="submit"] {
+#login input[type="submit"], button.btn {
     background: var(--color);
     color: black;
     padding: 5px 10px;
     border: none;
     border-radius: 5px;
 }
-#login input[type="submit"]:hover {
+#login input[type="submit"]:hover, button.btn:hover {
     background: #DC7F09
 }
-#login input[type="submit"]:active {
+#login input[type="submit"]:active, button.btn:active {
     position: relative;
     top: 1px;
+}
+button.btn {
+    font-size: 16px;
+    padding: 6px 12px;
 }
 #login .error {
     color: var(--error);
@@ -172,7 +196,6 @@ footer a:hover {
     height: calc(100vh - 102px - 50px);
     box-sizing: border-box;
 }
-
 .progress {
     margin-bottom: 3em;
     display: flex;
@@ -212,4 +235,8 @@ footer a:hover {
 .progress li > span {
     position: relative;
     display: flex;
+}
+main .footer {
+    display: flex;
+    justify-content: end;
 }

@@ -22,9 +22,9 @@
     </div>
     <div class="question"><%- question %></div>
     <ul class="answers">
-      <% options.forEach(function(option) { %>
+      <% options.forEach(function(option, i) { %>
         <li>
-          <a href="#">
+          <a href="#" data-index="<%= i %>">
             <span class="icon">
               <svg viewBox="0 0 5.5562501 7.40833">
                 <use xlink:href="#<%= option.icon %>"/>
@@ -32,24 +32,40 @@
             </span>
             <%= option.label %>
           </a>
+          <span class="test">
+            <svg viewBox="0 0 5.5562501 5.5562501">
+              <use xlink:href=""/>
+            </svg>
+          </span>
         </li>
       <% }); %>
     </ul>
+    <div class="footer">
+      <button id="next" class="btn">Dalej</button>
+      <div class="outro"></div>
+    </div>
   </main>
   <%- include('../partials/footer'); %>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@v1.x/components/prism-core.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@v1.x/plugins/autoloader/prism-autoloader.min.js"></script>
   <script>
-const answers = document.querySelector('.answers');
-const question = document.querySelector('.question');
-answers.addEventListener('click', (e) => {
-    e.preventDefault();
-    const link = e.target.closest('a');
-    if (link && !answers.classList.contains('answer')) {
-        link.classList.add('active');
-        answers.classList.add('answer');
-    }
-});
+   const answers = document.querySelector('.answers');
+   const question = document.querySelector('.question');
+   answers.addEventListener('click', (e) => {
+       e.preventDefault();
+       const link = e.target.closest('a');
+       mark_answer(link);
+   });
+   function mark_answer(link) {
+       if (link && !answers.classList.contains('answer')) {
+           link.classList.add('active');
+           answers.classList.add('answer');
+       }
+   }
+   function validate_answer(li) {
+       
+   }
+   
   </script>
 </body>
 </html>
