@@ -26,6 +26,7 @@ model Option {
   option_id   Int      @id @default(autoincrement())
   question_id Int
   label       String
+  valid       Boolean  @default(false)
   Answer      Answer[]
   Question    Question @relation(fields: [question_id], references: [question_id], onUpdate: Restrict, map: "Option_ibfk_1")
 
