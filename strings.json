@@ -1,0 +1,16 @@
+{
+  "valid": [
+    "Świetnie! Twoja odpowiedź jest poprawna.",
+    "Gratulacje, to właściwa odpowiedź.",
+    "Doskonale! To poprawna odpowiedź na zadane pytanie.",
+    "Brawo! Twoja odpowiedź jest prawidłowa.",
+    "Dobrze! To właściwa odpowiedź na postawione pytanie."
+  ],
+  "invalid": [
+    "Niestety, Twoja odpowiedź jest niepoprawna.",
+    "To nie jest właściwa odpowiedź, ale spróbuj jeszcze raz.",
+    "Przykro mi, ale musisz spróbować jeszcze raz.",
+    "To nie jest dobry wynik, ale nie poddawaj się!",
+    "Błędna odpowiedź, ale nie martw się - możesz się poprawić."
+  ]
+}

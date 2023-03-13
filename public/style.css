@@ -236,7 +236,7 @@ button.btn {
     position: relative;
     display: flex;
 }
-main .footer {
+main .footer .nav {
     display: flex;
     justify-content: end;
 }

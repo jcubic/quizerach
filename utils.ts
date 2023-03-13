@@ -1,5 +1,6 @@
 import type { Request } from 'express';
 import { v1 as uuid } from "uuid";
+import { randomInt } from 'crypto';
 
 export function unique_token() {
     return uuid();
@@ -24,3 +25,7 @@ export function origin(req: Request) {
     const protocol = req.protocol;
     return `${protocol}://${host}`;
 }
+
+export function random_pick<T>(array: T[]): T {
+    return array[randomInt(array.length)];
+};

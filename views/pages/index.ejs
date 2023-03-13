@@ -41,7 +41,9 @@
       <% }); %>
     </ul>
     <div class="footer">
-      <button id="next" class="btn">Dalej</button>
+      <div class="nav">
+        <button id="next" class="btn">Dalej</button>
+      </div>
       <div class="outro"></div>
     </div>
   </main>
@@ -49,23 +51,46 @@
   <script src="https://cdn.jsdelivr.net/npm/prismjs@v1.x/components/prism-core.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/prismjs@v1.x/plugins/autoloader/prism-autoloader.min.js"></script>
   <script>
-   const answers = document.querySelector('.answers');
-   const question = document.querySelector('.question');
-   answers.addEventListener('click', (e) => {
+   const slug = '<%= slug %>';
+   const poll = <%= poll %>;
+   const question = <%= index %>;
+   const $answers = document.querySelector('.answers');
+   const $question = document.querySelector('.question');
+   $answers.addEventListener('click', (e) => {
        e.preventDefault();
-       const link = e.target.closest('a');
-       mark_answer(link);
+       const $link = e.target.closest('a');
+       mark_answer($link);
+       validate_answer($link);
    });
-   function mark_answer(link) {
-       if (link && !answers.classList.contains('answer')) {
-           link.classList.add('active');
-           answers.classList.add('answer');
+   function mark_answer($link) {
+       if ($link && !$answers.classList.contains('answer')) {
+           $link.classList.add('active');
+           $answers.classList.add('answer');
        }
    }
-   function validate_answer(li) {
-       
+   function validate_answer($link) {
+       const answer = +$link.dataset.index;
+       const body = new URLSearchParams();
+       const id = ['invalid', 'valid'];
+       body.append('answer', answer);
+       body.append('question', question);
+       fetch(`/answer/${poll}`, {
+           method: 'post',
+           body
+       }).then(res => res.json())
+         .then(data => {
+             const $outro = document.querySelector('.outro');
+             if (data.error) {
+                 $outro.innerHTML = data.error;
+             } else {
+                 const use = $link.closest('li').querySelector('.test use');
+                 const href = document.createAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href');
+                 href.value = `#${id[+data.valid]}`;
+                 use.setAttributeNodeNS(href);
+                 $outro.innerHTML = `<p>${data.prompt}</p>\n${data.outro}`;
+             }
+         });
    }
-   
   </script>
 </body>
 </html>

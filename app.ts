@@ -2,12 +2,20 @@ import path from 'path';
 import express, { Request, Response, NextFunction } from 'express';
 import session from 'express-session';
 import { marked } from 'marked';
-import { PrismaClient, Question, Option } from "@prisma/client";
+import { PrismaClient, Poll, Question, Option, Set } from "@prisma/client";
 import bodyParser from 'body-parser';
+import { z } from 'zod';
+import strings from './strings.json';
+
+const answer_schema = z.object({
+    answer: z.string().transform((val) => parseInt(val, 10)),
+    question: z.string().transform((val) => parseInt(val, 10))
+});
 
 import {
     unique_token,
     is_string,
+    random_pick,
     is_valid_token,
     origin
 } from './utils';
@@ -86,6 +94,35 @@ function is_admin(req: Request, res: Response, next: NextFunction) {
     next();
 }
 
+type Questions = Array<Question & {Option: Option[]}>;
+type Quiz = Omit<Poll, 'set_id'> & {set: Set} & {Question: Questions};
+
+function render_quiz(res: Response, quiz: Quiz, index: number) {
+    const questions = quiz.Question;
+    const title = quiz.set.name;
+
+    const question = questions[index];
+
+    res.render('pages/index', {
+        question: marked.parse(question.intro_text),
+        title,
+        index,
+        poll: quiz.poll_id,
+        slug: quiz.slug,
+        progress: {
+            index,
+            max: questions.length
+        },
+        options: question.Option.map(({ label }, i) => {
+            const char = String.fromCharCode(97 + i);
+            return {
+                icon: `letter_${char}`,
+                label
+            };
+        })
+    });
+}
+
 app.use('/public', express.static('public'));
 app.use('/favicon', express.static('favicon'));
 
@@ -123,6 +160,7 @@ app.get('/quiz/:id/:slug?', /* is_auth, */ async function(req: Request, res: Res
     const poll = await prisma.poll.findFirst({
         where: { poll_id },
         select: {
+            poll_id: true,
             name: true,
             slug: true,
             set: true,
@@ -131,11 +169,14 @@ app.get('/quiz/:id/:slug?', /* is_auth, */ async function(req: Request, res: Res
             }
         }
     });
-    if (poll) {
+    const question = +(req.params.q ?? '');
+    if (Number.isNaN(question)) {
+        res.send('400');
+    } else if (poll) {
         if (poll.slug !== req.params.slug) {
             res.redirect(301, `/quiz/${poll_id}/${poll.slug}`);
         } else if (poll.Question.length) {
-            render_quiz(res, poll.set.name, poll.Question, 0);
+            render_quiz(res, poll, question);
         } else {
             res.send('This quiz is empty');
         }
@@ -144,8 +185,52 @@ app.get('/quiz/:id/:slug?', /* is_auth, */ async function(req: Request, res: Res
     }
 });
 
-app.post('/answer/:slug', async function(req: Request, res: Response) {
-    
+type AnswerReponse = {
+    error: string;
+} | {
+    valid: boolean;
+    prompt: string;
+    outro: string;
+};
+
+app.post('/answer/:id', async function(req: Request, res: Response) {
+    const poll_id = +req.params.id;
+    const poll = await prisma.poll.findFirst({
+        where: { poll_id },
+        select: {
+            name: true,
+            Question: {
+                include: { Option: true }
+            }
+        }
+    });
+    res.header("Content-Type",'application/json');
+    let payload: AnswerReponse;
+    if (!poll) {
+        payload = {error: 'poll not found'};
+    } else {
+        const result = answer_schema.safeParse(req.body);
+        console.log(result);
+        if (!result.success) {
+            payload = {error: result.error.message};
+        } else {
+            const body = result.data;
+            const question = poll.Question[body.question];
+            const option = question?.Option[body.answer];
+            if (!question || !option) {
+                payload = {error: 'invalid reuqest, option not found'};
+            } else {
+                const valid = option.valid;
+                const prompt = random_pick(valid ? strings.valid : strings.invalid);
+                payload = {
+                    valid,
+                    prompt,
+                    outro: marked.parse(question.outro_text)
+                };
+            }
+        }
+    }
+    res.send(JSON.stringify(payload));
 });
 
 app.get(ADMIN_LOGIN, function(req: Request, res: Response) {
@@ -265,29 +350,6 @@ app.post('/login', async function(req: Request, res: Response) {
         });
     }
 });
-
-type Questions = Array<Question & {Option: Option[]}>;
-
-function render_quiz(res: Response, title: string, questions: Questions, index: number) {
-
-    const question = questions[index];
-
-    res.render('pages/index', {
-        question: marked.parse(question.intro_text),
-        title,
-        progress: {
-            index,
-            max: questions.length
-        },
-        options: question.Option.map(({ label }, i) => {
-            const char = String.fromCharCode(97 + i);
-            return {
-                icon: `letter_${char}`,
-                label
-            };
-        })
-    });
-}
 
 app.get('/', function(req: Request, res: Response) {
     res.render('pages/debug', {
