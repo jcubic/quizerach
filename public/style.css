@@ -84,6 +84,8 @@ ul.answers {
 }
 .answers a.active {
     background: rgba(0, 0, 0, 0.6);
+}
+.answers a.active:not(.static) {
     animation: 0.5s blink ease-in-out;
 }
 .answers.answer a {

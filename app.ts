@@ -2,7 +2,7 @@ import path from 'path';
 import express, { Request, Response, NextFunction } from 'express';
 import session from 'express-session';
 import { marked } from 'marked';
-import { PrismaClient, Poll, Question, Option, Set } from "@prisma/client";
+import { PrismaClient, Poll, Question, Option, Set, Answer } from "@prisma/client";
 import bodyParser from 'body-parser';
 import { z } from 'zod';
 import strings from './strings.json';
@@ -18,6 +18,7 @@ import {
     is_string,
     random_pick,
     is_valid_token,
+    debug,
     origin
 } from './utils';
 import send_email from './email';
@@ -95,22 +96,42 @@ function is_admin(req: Request, res: Response, next: NextFunction) {
     next();
 }
 
-type Questions = Array<Question & {Option: Option[]}>;
-type Quiz = Omit<Poll, 'set_id'> & {set: Set} & {Question: Questions};
+type Questions = Array<Question & {Option: Option[]} & {Answer: Pick<Answer, 'option_id' | 'answer'>[]}>;
+type Quiz = Poll & {set: Set} & {Question: Questions}
+
+type UserAnswer = {
+    index: number;
+    valid: boolean;
+    answer: string | null;
+} | undefined;
 
 function render_quiz(res: Response, quiz: Quiz, index: number) {
     const questions = quiz.Question;
     const title = quiz.set.name;
-
     const question = questions[index];
     if (!question) {
         return res.send('404');
     }
-
+    let answer: UserAnswer;
+    if (question.Answer.length) {
+        const user_answer = question.Answer[0];
+        const index = question.Option.findIndex(option => {
+            return option.option_id === user_answer.option_id;
+        });
+        if (index !== -1) {
+            const valid = question.Option[index].valid;
+            answer = {
+                index,
+                valid,
+                answer: user_answer.answer
+            }
+        }
+    }
     res.render('pages/index', {
         question: marked.parse(question.intro_text),
         title,
         index,
+        answer,
         poll: quiz.poll_id,
         slug: quiz.slug,
         progress: {
@@ -161,21 +182,36 @@ app.get('/set/:id?', async function(req: Request, res: Response) {
 
 app.get('/quiz/:id/:slug?', is_auth, async function(req: Request, res: Response) {
     const poll_id = +req.params.id;
+    if (DEBUG && !req.session.email) {
+        req.session.email = 'jcubic@onet.pl';
+    }
     const poll = await prisma.poll.findFirst({
         where: { poll_id },
         select: {
             poll_id: true,
+            set_id: true,
             name: true,
             slug: true,
             set: true,
             Question: {
-                include: { Option: true }
+                select: {
+                    question_id: true,
+                    intro_text: true,
+                    outro_text: true,
+                    poll_id: true,
+                    Option: true,
+                    Answer: {
+                        where: { user: { email: req.session.email } },
+                        select: {
+                            answer: true,
+                            option_id: true
+                        }
+                    }
+                }
             }
         }
     });
-    if (DEBUG && !req.session.email) {
-        req.session.email = 'jcubic@onet.pl';
-    }
+    debug(poll);
     const question = req.query.q ? +req.query.q - 1 : 0;
     if (req.query.p === 'summary') {
         res.render('pages/debug', {

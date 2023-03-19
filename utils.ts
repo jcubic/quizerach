@@ -1,6 +1,7 @@
 import type { Request } from 'express';
 import { v1 as uuid } from "uuid";
 import { randomInt } from 'crypto';
+import { inspect } from 'util';
 
 export function unique_token() {
     return uuid();
@@ -29,3 +30,8 @@ export function origin(req: Request) {
 export function random_pick<T>(array: T[]): T {
     return array[randomInt(array.length)];
 };
+
+
+export function debug(data: unknown) {
+    console.log(inspect(data, { depth: null, maxArrayLength: null }));
+}

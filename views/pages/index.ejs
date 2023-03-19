@@ -24,10 +24,10 @@
       <% } %>
     </div>
     <div class="question"><%- question %></div>
-    <ul class="answers">
+    <ul class="answers<% if (answer) { %> answer<% } %>">
       <% options.forEach(function(option, i) { %>
         <li>
-          <a href="#" data-index="<%= i %>">
+          <a href="#" data-index="<%= i %>"<% if (answer?.index === i) { %> class="active static"<% } %>>
             <span class="icon">
               <svg viewBox="0 0 5.5562501 7.40833">
                 <use xlink:href="#<%= option.icon %>"/>
@@ -37,7 +37,7 @@
           </a>
           <span class="test">
             <svg viewBox="0 0 5.5562501 5.5562501">
-              <use xlink:href=""/>
+              <use xlink:href="<% if (i === answer?.index) { %>#<%= answer.valid ? 'valid' : 'invalid' %><% } %>"/>
             </svg>
           </span>
         </li>
@@ -46,9 +46,9 @@
     <div class="footer">
       <div class="nav">
         <% if (progress.index < progress.max - 1) { %>
-          <button id="next" class="btn" disabled>Dalej</button>
+          <button id="next" class="btn"<% if (!answer) { %> disabled<% } %>>Dalej</button>
         <% } else { %>
-          <button id="next" class="btn" disabled>Podsumowanie</button>
+          <button id="next" class="btn"<% if (!answer) { %> disabled<% } %>>Podsumowanie</button>
         <% } %>
       </div>
       <div class="outro"></div>
