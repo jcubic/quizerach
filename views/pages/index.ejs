@@ -81,7 +81,7 @@
          .then(data => {
              const $outro = document.querySelector('.outro');
              if (data.error) {
-                 $outro.innerHTML = data.error;
+                 $outro.innerHTML = `<p class="error">${data.error}</p>`;
              } else {
                  const use = $link.closest('li').querySelector('.test use');
                  const href = document.createAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href');

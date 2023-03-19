@@ -176,7 +176,7 @@ button.btn {
     font-size: 16px;
     padding: 6px 12px;
 }
-#login .error {
+.error {
     color: var(--error);
 }
 .box {
