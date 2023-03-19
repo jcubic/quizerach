@@ -183,6 +183,9 @@ button.btn {
 .error {
     color: var(--error);
 }
+.center {
+    text-align: center;
+}
 .box {
     width: 400px;
     display: flex;

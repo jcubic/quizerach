@@ -8,6 +8,9 @@
   <%- include('../partials/header'); %>
   <main>
     <h1><%= title %></h1>
+    <noscript>
+      <p class="error center">Ten quiz nie działa bez JavaScript!</p>
+    </noscript>
     <div class="progress">
       <ul>
       <% for (let i = 0; i < progress.max; ++i) { %>
