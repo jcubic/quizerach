@@ -165,10 +165,14 @@ footer a:hover {
     border: none;
     border-radius: 5px;
 }
-#login input[type="submit"]:hover, button.btn:hover {
+#login input[type="submit"]:not([disabled]):hover, button.btn:not([disabled]):hover {
     background: #DC7F09
 }
-#login input[type="submit"]:active, button.btn:active {
+button.btn[disabled] {
+    background: #b7b6b4;
+    cursor: not-allowed;
+}
+#login input[type="submit"]:not([disabled]):active, button.btn:not([disabled]):active {
     position: relative;
     top: 1px;
 }
