@@ -66,13 +66,4 @@ model User {
   token            String?     @db.VarChar(40)
   token_expiration DateTime    @default(now())
   Answer           Answer[]
-  user_pool        User_Pool[]
-}
-
-model User_Pool {
-  user_pool_id Int  @id @default(autoincrement())
-  user_id      Int
-  user         User @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "user_pool_ibfk_1")
-
-  @@index([user_id], map: "user_id")
 }
