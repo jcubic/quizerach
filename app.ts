@@ -169,7 +169,7 @@ app.get('/quiz/:id/:slug?', /* is_auth, */ async function(req: Request, res: Res
             }
         }
     });
-    const question = +(req.params.q ?? '');
+    const question = +(req.query.q ?? '');
     if (Number.isNaN(question)) {
         res.send('400');
     } else if (poll) {
@@ -204,13 +204,11 @@ app.post('/answer/:id', async function(req: Request, res: Response) {
             }
         }
     });
-    res.header("Content-Type",'application/json');
     let payload: AnswerReponse;
     if (!poll) {
         payload = {error: 'poll not found'};
     } else {
         const result = answer_schema.safeParse(req.body);
-        console.log(result);
         if (!result.success) {
             payload = {error: result.error.message};
         } else {
@@ -230,7 +228,7 @@ app.post('/answer/:id', async function(req: Request, res: Response) {
             }
         }
     }
-    res.send(JSON.stringify(payload));
+    res.json(payload);
 });
 
 app.get(ADMIN_LOGIN, function(req: Request, res: Response) {
@@ -358,5 +356,5 @@ app.get('/', function(req: Request, res: Response) {
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
+  console.log(`Quizerach app listening on port ${port}`);
 });
