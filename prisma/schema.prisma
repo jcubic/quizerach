@@ -33,6 +33,18 @@ model Option {
   @@index([question_id], map: "question_id")
 }
 
+model Question {
+  question_id Int      @id @default(autoincrement())
+  poll_id     Int
+  intro_text  String   @db.Text
+  outro_text  String   @db.Text
+  Answer      Answer[]
+  Option      Option[]
+  Poll        Poll     @relation(fields: [poll_id], references: [poll_id], onUpdate: Restrict, map: "Question_ibfk_1")
+
+  @@index([poll_id], map: "poll_id")
+}
+
 model Poll {
   poll_id  Int        @id @default(autoincrement())
   set_id   Int
@@ -48,17 +60,6 @@ model Set {
   Poll    Poll[]
 }
 
-model Question {
-  question_id Int      @id @default(autoincrement())
-  poll_id     Int
-  intro_text  String   @db.Text
-  outro_text  String   @db.Text
-  Answer      Answer[]
-  Option      Option[]
-  Poll        Poll     @relation(fields: [poll_id], references: [poll_id], onUpdate: Restrict, map: "Question_ibfk_1")
-
-  @@index([poll_id], map: "poll_id")
-}
 
 model User {
   user_id          Int         @id @default(autoincrement())

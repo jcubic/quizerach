@@ -16,6 +16,8 @@ const config_schema = z.object({
     MYSQL_HOST: z.string(),
     MYSQL_PASS: z.string(),
 
+    DEBUG: z.optional(z.string().transform(Number).transform(Boolean)),
+
     PORT: z
         .string().transform(Number)
         .refine(n => !Number.isNaN(n)),
@@ -49,3 +51,5 @@ export const admin = {
 
 export const port = result.data.PORT;
 export const secret = result.data.SESSION_SECRET;
+
+export const DEBUG = result.data.DEBUG;

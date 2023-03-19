@@ -9,7 +9,8 @@ import strings from './strings.json';
 
 const answer_schema = z.object({
     answer: z.string().transform((val) => parseInt(val, 10)),
-    question: z.string().transform((val) => parseInt(val, 10))
+    question: z.string().transform((val) => parseInt(val, 10)),
+    text: z.optional(z.string())
 });
 
 import {
@@ -20,7 +21,7 @@ import {
     origin
 } from './utils';
 import send_email from './email';
-import { port, secret, admin } from './config';
+import { port, secret, admin, DEBUG } from './config';
 
 const ADMIN = '/admin';
 const ADMIN_LOGIN = `${ADMIN}/login`;
@@ -81,7 +82,7 @@ function with_redirect(req: Request, res: Response, next: NextFunction) {
 }
 
 function is_auth(req: Request, res: Response, next: NextFunction) {
-    if (!req.session.email) {
+    if (!(DEBUG || req.session.email)) {
         return res.redirect(302, `/login?next=${next_url(req)}`);
     }
     next();
@@ -102,6 +103,9 @@ function render_quiz(res: Response, quiz: Quiz, index: number) {
     const title = quiz.set.name;
 
     const question = questions[index];
+    if (!question) {
+        return res.send('404');
+    }
 
     res.render('pages/index', {
         question: marked.parse(question.intro_text),
@@ -155,7 +159,7 @@ app.get('/set/:id?', async function(req: Request, res: Response) {
     }
 });
 
-app.get('/quiz/:id/:slug?', /* is_auth, */ async function(req: Request, res: Response) {
+app.get('/quiz/:id/:slug?', is_auth, async function(req: Request, res: Response) {
     const poll_id = +req.params.id;
     const poll = await prisma.poll.findFirst({
         where: { poll_id },
@@ -169,6 +173,9 @@ app.get('/quiz/:id/:slug?', /* is_auth, */ async function(req: Request, res: Res
             }
         }
     });
+    if (DEBUG && !req.session.email) {
+        req.session.email = 'jcubic@onet.pl';
+    }
     const question = +(req.query.q ?? '');
     if (Number.isNaN(question)) {
         res.send('400');
@@ -185,13 +192,18 @@ app.get('/quiz/:id/:slug?', /* is_auth, */ async function(req: Request, res: Res
     }
 });
 
-type AnswerReponse = {
-    error: string;
-} | {
-    valid: boolean;
-    prompt: string;
-    outro: string;
-};
+async function get_user_id(email?: string) {
+    const user = await prisma.user.findUnique({
+        where: { email: email },
+        select: {
+            user_id: true
+        }
+    });
+    if (user) {
+        return user.user_id;
+    }
+}
+
 
 app.post('/answer/:id', async function(req: Request, res: Response) {
     const poll_id = +req.params.id;
@@ -204,31 +216,55 @@ app.post('/answer/:id', async function(req: Request, res: Response) {
             }
         }
     });
-    let payload: AnswerReponse;
-    if (!poll) {
-        payload = {error: 'poll not found'};
-    } else {
+    try {
+        if (!poll) {
+            throw new Error('poll not found');
+        }
         const result = answer_schema.safeParse(req.body);
         if (!result.success) {
-            payload = {error: result.error.message};
-        } else {
-            const body = result.data;
-            const question = poll.Question[body.question];
-            const option = question?.Option[body.answer];
-            if (!question || !option) {
-                payload = {error: 'invalid reuqest, option not found'};
-            } else {
-                const valid = option.valid;
-                const prompt = random_pick(valid ? strings.valid : strings.invalid);
-                payload = {
-                    valid,
-                    prompt,
-                    outro: marked.parse(question.outro_text)
-                };
-            }
+            throw new Error(result.error.message);
         }
+        const body = result.data;
+        const question = poll.Question[body.question];
+        const option = question?.Option[body.answer];
+        if (!question || !option) {
+            throw new Error('invalid reuqest, option not found');
+        }
+        const valid = option.valid;
+        const user_id = await get_user_id(req.session.email);
+        if (!user_id) {
+            throw new Error('invalid user');
+        }
+        const question_id = question.question_id;
+        const option_id = option.option_id;
+        const answer = await prisma.answer.findFirst({
+            where: {
+                user_id,
+                question_id,
+                option_id
+            }
+        });
+        if (answer) {
+            const message = random_pick(strings.duplicated);
+            throw new Error(message);
+        }
+        await prisma.answer.create({
+            data: {
+                user_id,
+                question_id,
+                option_id,
+                answer: body.text
+            },
+        })
+        const prompt = random_pick(valid ? strings.valid : strings.invalid);
+        res.json({
+            valid,
+            prompt,
+            outro: marked.parse(question.outro_text)
+        });
+    } catch (e) {
+        res.json({error: (e as Error).message});
     }
-    res.json(payload);
 });
 
 app.get(ADMIN_LOGIN, function(req: Request, res: Response) {

@@ -12,5 +12,9 @@
     "Przykro mi, ale musisz spróbować jeszcze raz.",
     "To nie jest dobry wynik, ale nie poddawaj się!",
     "Błędna odpowiedź, ale nie martw się - możesz się poprawić."
+  ],
+  "duplicated": [
+    "Niestety już owpowiedziałeś na to pytanie.",
+    "Nie możesz odpowiedzieć dwa razy na to samo pytanie"
   ]
 }
