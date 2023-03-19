@@ -176,8 +176,12 @@ app.get('/quiz/:id/:slug?', is_auth, async function(req: Request, res: Response)
     if (DEBUG && !req.session.email) {
         req.session.email = 'jcubic@onet.pl';
     }
-    const question = +(req.query.q ?? '');
-    if (Number.isNaN(question)) {
+    const question = req.query.q ? +req.query.q - 1 : 0;
+    if (req.query.p === 'summary') {
+        res.render('pages/debug', {
+            html: `summary`
+        });
+    } else if (Number.isNaN(question)) {
         res.send('400');
     } else if (poll) {
         if (poll.slug !== req.params.slug) {
@@ -203,7 +207,6 @@ async function get_user_id(email?: string) {
         return user.user_id;
     }
 }
-
 
 app.post('/answer/:id', async function(req: Request, res: Response) {
     const poll_id = +req.params.id;

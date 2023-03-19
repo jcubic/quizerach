@@ -42,7 +42,11 @@
     </ul>
     <div class="footer">
       <div class="nav">
-        <button id="next" class="btn">Dalej</button>
+        <% if (progress.index < progress.max - 1) { %>
+          <button id="next" class="btn" disabled>Dalej</button>
+        <% } else { %>
+          <button id="next" class="btn" disabled>Podsumowanie</button>
+        <% } %>
       </div>
       <div class="outro"></div>
     </div>
@@ -54,13 +58,25 @@
    const slug = '<%= slug %>';
    const poll = <%= poll %>;
    const question = <%= index %>;
+   const last = <%= progress.index === progress.max - 1 ? 'true' : 'false' %>;
    const $answers = document.querySelector('.answers');
    const $question = document.querySelector('.question');
+   const $next = document.querySelector('#next');
    $answers.addEventListener('click', (e) => {
        e.preventDefault();
        const $link = e.target.closest('a');
        mark_answer($link);
        validate_answer($link);
+   });
+   $next.addEventListener('click', (e) => {
+       const url = new URL(window.location.href);
+       if (last) {
+           url.searchParams.delete('q');
+           url.searchParams.set('p', 'summary');
+       } else {
+           url.searchParams.set('q', question + 2);
+       }
+       location.href = url;
    });
    function mark_answer($link) {
        if ($link && !$answers.classList.contains('answer')) {
@@ -89,6 +105,7 @@
                  use.setAttributeNodeNS(href);
                  $outro.innerHTML = `<p>${data.prompt}</p>\n${data.outro}`;
              }
+             $next.disabled = false;
          });
    }
   </script>
