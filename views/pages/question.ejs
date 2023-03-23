@@ -51,7 +51,10 @@
           <button id="next" class="btn"<% if (!answer) { %> disabled<% } %>>Podsumowanie</button>
         <% } %>
       </div>
-      <div class="outro"></div>
+      <div class="outro"><% if (answer) { %>
+        <p><%- answer.prompt %></p>
+        <div><%- answer.outro %></div>
+      <% } %></div>
     </div>
   </main>
   <%- include('../partials/footer'); %>
@@ -106,7 +109,7 @@
                  const href = document.createAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href');
                  href.value = `#${id[+data.valid]}`;
                  use.setAttributeNodeNS(href);
-                 $outro.innerHTML = `<p>${data.prompt}</p>\n${data.outro}`;
+                 $outro.innerHTML = `<p>${data.prompt}</p>\n<div>${data.outro}</div>`;
              }
              $next.disabled = false;
          });

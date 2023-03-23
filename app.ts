@@ -96,14 +96,27 @@ function is_admin(req: Request, res: Response, next: NextFunction) {
     next();
 }
 
-type Questions = Array<Question & {Option: Option[]} & {Answer: Pick<Answer, 'option_id' | 'answer'>[]}>;
+type QuestionWithOptions = Question & {Option: Option[]};
+
+type Questions = Array<QuestionWithOptions & {Answer: Pick<Answer, 'option_id' | 'answer'>[]}>;
 type Quiz = Poll & {set: Set} & {Question: Questions}
 
 type UserAnswer = {
     index: number;
     valid: boolean;
+    prompt: string;
+    outro: string;
     answer: string | null;
 } | undefined;
+
+function format_answer(question: QuestionWithOptions, valid: boolean) {
+    return {
+        valid,
+        prompt: random_pick(valid ? strings.valid : strings.invalid),
+        outro: marked.parse(question.outro_text)
+    };
+}
+
 
 function render_quiz(res: Response, quiz: Quiz, index: number) {
     const questions = quiz.Question;
@@ -122,12 +135,13 @@ function render_quiz(res: Response, quiz: Quiz, index: number) {
             const valid = question.Option[index].valid;
             answer = {
                 index,
+                ...format_answer(question, valid),
                 valid,
                 answer: user_answer.answer
             }
         }
     }
-    res.render('pages/index', {
+    res.render('pages/question', {
         question: marked.parse(question.intro_text),
         title,
         index,
@@ -211,7 +225,6 @@ app.get('/quiz/:id/:slug?', is_auth, async function(req: Request, res: Response)
             }
         }
     });
-    debug(poll);
     const question = req.query.q ? +req.query.q - 1 : 0;
     if (req.query.p === 'summary') {
         res.render('pages/debug', {
@@ -295,12 +308,7 @@ app.post('/answer/:id', async function(req: Request, res: Response) {
                 answer: body.text
             },
         })
-        const prompt = random_pick(valid ? strings.valid : strings.invalid);
-        res.json({
-            valid,
-            prompt,
-            outro: marked.parse(question.outro_text)
-        });
+        res.json(format_answer(question, valid));
     } catch (e) {
         res.json({error: (e as Error).message});
     }
