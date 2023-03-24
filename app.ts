@@ -227,8 +227,19 @@ app.get('/quiz/:id/:slug?', is_auth, async function(req: Request, res: Response)
     });
     const question = req.query.q ? +req.query.q - 1 : 0;
     if (req.query.p === 'summary') {
+        const len = poll?.Question.length ?? 0;
+        const solved = poll?.Question.map(question => {
+            if (question.Answer.length) {
+                const answer = question.Answer[0];
+                const option = question.Option.find(option => {
+                    return option.option_id === answer.option_id;
+                });
+                return option?.valid;
+            }
+        }).filter(Boolean).length ?? 0;
+        const percentage = (solved / len) * 100;
         res.render('pages/debug', {
-            html: `summary`
+            html: `<div>${percentage.toFixed(1)}%</div>`
         });
     } else if (Number.isNaN(question)) {
         res.send('400');
