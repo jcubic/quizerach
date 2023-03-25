@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <%- include('../partials/head', { title: 'Quiz Admin Login' }); %>
+</head>
+<body>
+  <%- include('../partials/header'); %>
+  <main class="center-box">
+    <h1><%= title %></h1>
+    <div class="progress">
+      <ul>
+      <% for (let i = 0; i < questions; ++i) { %>
+        <li class="selected">
+            <span>
+                <svg viewBox="0 0 5.5562501 7.40833">
+                    <use xlink:href="#num_<%= i + 1 %>"/>
+                </svg>
+            </span>
+        </li>
+      <% } %>
+    </div>
+    <div class="box">
+      <h2>Twój Wynik <%= percent %>%</h2>
+      <%
+      const strings = {many: 'pytań', one: 'pytanie', few: 'pytania'};
+      const pr = new Intl.PluralRules('pl-PL');
+      %>
+      <p>Odpowiedziałeś(aś) poprawnie na <%= solved %> <%= strings[pr.select(solved)] %></p>
+    </div>
+  </main>
+  <%- include('../partials/footer'); %>
+</body>
+</html>
