@@ -1,0 +1,42 @@
+name: Deploy to Server
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+      - name: Install Yarn
+        run: npm install -g yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build TypeScript
+        run: yarn build
+        
+      - name: Configure SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Copy files to server
+        run: scp -P ${{ secrets.SSH_PORT}} -o StrictHostKeyChecking=no -r ./dist/* ./public ./prisma package.json ${{ secrets.SSH_SERVER }}:${{ secrets.SSH_PATH }}
+
+      - name: Install depenedencies
+        run: ssh -p ${{ secrets.SSH_PORT}} -o StrictHostKeyChecking=no ${{ secrets.SSH_SERVER }} "cd ${{ secrets.SSH_PATH }} && source ~/.nvm/nvm.sh && nvm use 16 && npm install -g yarn && yarn install --frozen-lockfile --production"
+
+      - name: Restart App
+        run: ssh -p ${{ secrets.SSH_PORT}} -o StrictHostKeyChecking=no ${{ secrets.SSH_SERVER }} "touch ${{ secrets.SSH_PATH }}/tmp/restart.txt"

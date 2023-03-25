@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint . --ext .ts",
+    "build": "tsc",
     "valid": "npx depngn 16"
   },
   "dependencies": {
