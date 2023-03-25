@@ -5,6 +5,9 @@ import { marked } from 'marked';
 import { PrismaClient, Poll, Question, Option, Set, Answer } from "@prisma/client";
 import bodyParser from 'body-parser';
 import { z } from 'zod';
+import rateLimit from 'express-rate-limit';
+import morgan from 'morgan';
+
 import strings from './strings.json';
 
 const answer_schema = z.object({
@@ -23,6 +26,11 @@ import {
 } from './utils';
 import send_email from './email';
 import { port, secret, admin, DEBUG } from './config';
+
+const limiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 100
+});
 
 const ADMIN = '/admin';
 const ADMIN_LOGIN = `${ADMIN}/login`;
@@ -45,6 +53,8 @@ app.use(session({
 }));
 
 app.use(with_redirect);
+app.use(limiter);
+app.use(morgan('combined'));
 
 declare module "express-session" {
     interface SessionData {
