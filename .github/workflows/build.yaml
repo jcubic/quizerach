@@ -33,7 +33,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
 
       - name: Copy files to server
-        run: scp -P ${{ secrets.SSH_PORT}} -o StrictHostKeyChecking=no -r ./dist/* ./public ./prisma package.json ${{ secrets.SSH_SERVER }}:${{ secrets.SSH_PATH }}
+        run: scp -P ${{ secrets.SSH_PORT}} -o StrictHostKeyChecking=no -r ./dist/* ./public ./views ./favicon ./prisma package.json ${{ secrets.SSH_SERVER }}:${{ secrets.SSH_PATH }}
 
       - name: Install depenedencies
         run: ssh -p ${{ secrets.SSH_PORT}} -o StrictHostKeyChecking=no ${{ secrets.SSH_SERVER }} "cd ${{ secrets.SSH_PATH }} && source ~/.nvm/nvm.sh && nvm use 16 && npm install -g yarn && yarn install --frozen-lockfile --production"
