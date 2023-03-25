@@ -26,6 +26,7 @@
       const pr = new Intl.PluralRules('pl-PL');
       %>
       <p>Odpowiedziałeś(aś) poprawnie na <%= solved %> <%= strings[pr.select(solved)] %></p>
+      <p>Nawet jeśli nie odpowiedziałeś(aś) poprawnie na wszystkie pytania, to wspomoże to twoją pamięć.</p>
     </div>
   </main>
   <%- include('../partials/footer'); %>
