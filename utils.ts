@@ -35,3 +35,7 @@ export function random_pick<T>(array: T[]): T {
 export function debug(data: unknown) {
     console.log(inspect(data, { depth: null, maxArrayLength: null }));
 }
+
+export function next_url(req: Request) {
+    return encodeURIComponent(req.originalUrl);
+}

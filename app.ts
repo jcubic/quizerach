@@ -1,14 +1,13 @@
-import path from 'path';
-import express, { Request, Response, NextFunction } from 'express';
-import session from 'express-session';
+
+import { Request, Response, NextFunction } from 'express';
 import { marked } from 'marked';
 import { PrismaClient, Poll, Question, Option, Set, Answer } from "@prisma/client";
-import bodyParser from 'body-parser';
+
 import { z } from 'zod';
-import rateLimit from 'express-rate-limit';
-import morgan from 'morgan';
 
 import strings from './strings.json';
+import app from './setup';
+import { is_admin, is_auth } from './middleware';
 
 const answer_schema = z.object({
     answer: z.string().transform((val) => parseInt(val, 10)),
@@ -25,86 +24,9 @@ import {
     origin
 } from './utils';
 import send_email from './email';
-import { port, secret, admin, DEBUG } from './config';
-
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100
-});
-
-const ADMIN = '/admin';
-const ADMIN_LOGIN = `${ADMIN}/login`;
-
-const app = express();
+import { port, admin, DEBUG, ADMIN, ADMIN_LOGIN } from './config';
 
 const prisma = new PrismaClient();
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
-
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(session({
-    secret,
-    resave: false,
-    genid: unique_token,
-    saveUninitialized: true,
-    cookie: { httpOnly: true, maxAge: 60*60*1000 },
-    name: 'QS_'
-}));
-
-app.use(with_redirect);
-app.use(limiter);
-app.use(morgan('combined'));
-
-declare module "express-session" {
-    interface SessionData {
-        admin: boolean;
-        email: string;
-    }
-}
-
-declare global {
-    namespace Express {
-        interface Request {
-            with_redirect(url: string): string;
-        }
-        interface Response {
-            url_redirect(next: string): void;
-        }
-    }
-}
-
-function next_url(req: Request) {
-    return encodeURIComponent(req.originalUrl);
-}
-
-function with_redirect(req: Request, res: Response, next: NextFunction) {
-    let redirect = '';
-    if (is_string(req.query.next)) {
-        redirect = `?next=${encodeURIComponent(req.query.next)}`;
-    }
-    req.with_redirect = function(url: string) {
-        return `${url}${redirect}`;
-    };
-    res.url_redirect = function(next: string) {
-        res.redirect(302, decodeURIComponent(next));
-    };
-    next();
-}
-
-function is_auth(req: Request, res: Response, next: NextFunction) {
-    if (!(DEBUG || req.session.email)) {
-        return res.redirect(302, `/login?next=${next_url(req)}`);
-    }
-    next();
-}
-
-function is_admin(req: Request, res: Response, next: NextFunction) {
-    if (!req.session.admin) {
-        return res.redirect(302, `${ADMIN_LOGIN}?next=${next_url(req)}`);
-    }
-    next();
-}
 
 type QuestionWithOptions = Question & {Option: Option[]};
 
@@ -171,9 +93,6 @@ function render_quiz(res: Response, quiz: Quiz, index: number) {
         })
     });
 }
-
-app.use('/public', express.static('public'));
-app.use('/favicon', express.static('favicon'));
 
 app.get('/set/:id?', async function(req: Request, res: Response) {
     if (req.params.id) {

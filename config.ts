@@ -53,3 +53,11 @@ export const port = result.data.PORT;
 export const secret = result.data.SESSION_SECRET;
 
 export const DEBUG = result.data.DEBUG;
+
+export const ADMIN = '/admin';
+export const ADMIN_LOGIN = `${ADMIN}/login`;
+
+export const rate_limit = {
+    timer: 15 * 60 * 1000, // 15 minutes
+    requests: 100
+};
