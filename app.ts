@@ -22,7 +22,7 @@ import {
     origin
 } from './utils';
 import send_email from './email';
-import { port, admin, DEBUG, ADMIN, ADMIN_LOGIN } from './config';
+import { port, admin, ADMIN, ADMIN_LOGIN } from './config';
 
 app.get('/set/:id?', async function(req: Request, res: Response) {
     if (req.params.id) {
@@ -55,9 +55,6 @@ app.get('/set/:id?', async function(req: Request, res: Response) {
 
 app.get('/quiz/:id/:slug?', is_auth, async function(req: Request, res: Response) {
     const poll_id = +req.params.id;
-    if (DEBUG && !req.session.email) {
-        req.session.email = 'jcubic@onet.pl';
-    }
     const poll = await prisma.poll.findFirst({
         where: { poll_id },
         select: {
@@ -134,17 +131,20 @@ async function get_user_id(email?: string) {
 }
 
 app.post('/answer/:id', async function(req: Request, res: Response) {
-    const poll_id = +req.params.id;
-    const poll = await prisma.poll.findFirst({
-        where: { poll_id },
-        select: {
-            name: true,
-            Question: {
-                include: { Option: true }
-            }
-        }
-    });
     try {
+        if (!req.session.email) {
+            throw new Error('You need to login first');
+        }
+        const poll_id = +req.params.id;
+        const poll = await prisma.poll.findFirst({
+            where: { poll_id },
+            select: {
+                name: true,
+                Question: {
+                    include: { Option: true }
+                }
+            }
+        });
         if (!poll) {
             throw new Error('poll not found');
         }
