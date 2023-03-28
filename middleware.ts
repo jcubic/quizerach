@@ -29,11 +29,11 @@ export function with_redirect(req: Request, res: Response, next: NextFunction) {
 }
 
 export function is_auth(req: Request, res: Response, next: NextFunction) {
-    if (DEBUG && !req.session.email) {
+    if (!req.session.email) {
+        if (!DEBUG) {
+            return res.redirect(302, `/login?next=${next_url(req)}`);
+        }
         req.session.email = 'jcubic@onet.pl';
-    }
-    if (req.session.email) {
-        return res.redirect(302, `/login?next=${next_url(req)}`);
     }
     next();
 }

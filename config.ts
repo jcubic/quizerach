@@ -11,11 +11,6 @@ const config_schema = z.object({
     ADMIN_NAME: z.string(),
     ADMIN_PASS: z.string(),
 
-    MYSQL_NAME: z.string(),
-    MYSQL_USER: z.string(),
-    MYSQL_HOST: z.string(),
-    MYSQL_PASS: z.string(),
-
     DEBUG: z.optional(z.string().transform(Number).transform(Boolean)),
 
     PORT: z
@@ -35,13 +30,6 @@ export const email = {
     host: result.data.SMTP_HOST,
     user: result.data.SMTP_USER,
     pass: result.data.SMTP_PASS
-};
-
-export const mysql = {
-    name: result.data.MYSQL_NAME,
-    user: result.data.MYSQL_USER,
-    host: result.data.MYSQL_HOST,
-    pass: result.data.MYSQL_PASS
 };
 
 export const admin = {
