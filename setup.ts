@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import { unique_token } from './utils';
 import { secret, rate_limit } from './config';
 import { with_redirect } from './middleware';
+import graphql from './graphql';
 
 const limiter = rateLimit({
   windowMs: rate_limit.timer,
@@ -41,5 +42,12 @@ declare module "express-session" {
         email: string;
     }
 }
+
+export const start = (port: number, callback: () => void) => {
+    graphql.start().then(() => {
+        graphql.applyMiddleware({ app, path: '/api/' });
+        app.listen({ port }, callback);
+    });
+};
 
 export default app;

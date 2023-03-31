@@ -3,7 +3,8 @@ import { z } from 'zod';
 
 import strings from './strings.json';
 import prisma from './prisma';
-import app from './setup';
+import app, { start } from './setup';
+
 import { is_admin, is_auth } from './middleware';
 import { render_quiz, format_answer } from './quiz';
 
@@ -314,6 +315,7 @@ app.get('/', function(req: Request, res: Response) {
     });
 });
 
-app.listen(port, () => {
+
+start(port, () => {
   console.log(`Quizerach app listening on port ${port}`);
 });

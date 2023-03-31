@@ -1,0 +1,12 @@
+scalar DateTime
+
+type Query {
+  users: [User!]!
+  user(email: String, id: Int): User
+}
+type User {
+  user_id: Int!
+  email: String
+  token: String
+  token_expiration: DateTime!
+}
