@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "build": "tsc",
+    "build": "tsc && cp -r public views graphql favicon package.json prisma dist/ && find dist -name '*.ts' | xargs rm",
     "valid": "npx depngn 16"
   },
   "dependencies": {
