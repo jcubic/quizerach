@@ -1,9 +1,15 @@
 import fs from 'fs';
 import path from 'path';
-import { ApolloServer, gql } from 'apollo-server-express';
+import { ApolloServer } from '@apollo/server';
 import { GraphQLDateTime } from 'graphql-scalars';
+import gql from 'graphql-tag';
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
 
 import prisma from '../prisma';
+
+interface Context {
+  admin?: boolean;
+}
 
 const typeDefs = gql(fs.readFileSync(path.join(__dirname, 'schema.graphql'), 'utf8'));
 
@@ -36,7 +42,12 @@ const resolvers = {
     }
 };
 
+export const apolloServer = (httpServer: any) => {
+    return new ApolloServer<Context>({
+        typeDefs,
+        resolvers,
+        plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+    });
+    
+};
 
-const server = new ApolloServer({ typeDefs, resolvers });
-
-export default server;

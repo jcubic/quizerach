@@ -4,11 +4,15 @@ import bodyParser from 'body-parser';
 import session from 'express-session';
 import rateLimit from 'express-rate-limit';
 import morgan from 'morgan';
+import http from 'http';
+import cors from 'cors';
+import { json } from 'body-parser';
+import { expressMiddleware } from '@apollo/server/express4';
 
 import { unique_token } from './utils';
 import { secret, rate_limit } from './config';
 import { with_redirect } from './middleware';
-import graphql from './graphql';
+import { apolloServer } from './graphql';
 
 const limiter = rateLimit({
   windowMs: rate_limit.timer,
@@ -43,11 +47,19 @@ declare module "express-session" {
     }
 }
 
-export const start = (port: number, callback: () => void) => {
-    graphql.start().then(() => {
-        graphql.applyMiddleware({ app, path: '/api/' });
-        app.listen({ port }, callback);
-    });
+export const start = async (port: number, callback: () => void) => {
+    const httpServer = http.createServer(app);
+    const server = apolloServer(httpServer);
+    await server.start();
+    app.use(
+        '/api/',
+        cors<cors.CorsRequest>(),
+        json(),
+        expressMiddleware(server, {
+            context: async ({ req }) => ({ token: !!req.session.admin }),
+        }),
+    );
+    httpServer.listen({ port }, callback);
 };
 
 export default app;
