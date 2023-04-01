@@ -8,6 +8,7 @@
   "scripts": {
     "quiz": "npm run watch --prefix quiz",
     "admin": "npm run dev --prefix admin",
+    "studio": "cd quiz && npx prisma studio",
     "dev": "concurrently \"npm run admin\" \"npm run quiz\"",
     "build:quiz": "npm run build --prefix quiz",
     "build:admin": "npm run build --prefix admin",
