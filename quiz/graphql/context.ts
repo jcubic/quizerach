@@ -7,7 +7,9 @@ export interface Context {
     prisma: typeof prisma;
 }
 
-export async function create_context({ req }: ExpressContextFunctionArgument): Promise<Partial<Context>> {
+export async function create_context(
+    { req }: ExpressContextFunctionArgument
+): Promise<Partial<Context>> {
     const admin = !!req.session.admin;
     return {
         prisma,
