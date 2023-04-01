@@ -47,7 +47,11 @@ export const apolloServer = (httpServer: any) => {
         typeDefs,
         resolvers,
         plugins: [ApolloServerPluginDrainHttpServer({ httpServer })],
+        introspection: true,
+        cors: {
+            origin: "*",
+            credentials: true
+        }
     });
-    
 };
 
