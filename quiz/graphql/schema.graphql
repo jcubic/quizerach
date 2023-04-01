@@ -20,9 +20,17 @@ type Option {
   answers: [Answer!]!
   label: String!
   option_id: Int!
-  question: Question!
+  question: Question
   question_id: Int!
   valid: Boolean!
+}
+
+type Poll {
+  name: String!
+  poll_id: Int!
+  questions: [Question!]!
+  set_id: Int!
+  slug: String!
 }
 
 type Query {
@@ -35,6 +43,7 @@ type Question {
   intro_text: String!
   options: [Option!]!
   outro_text: String!
+  poll: Poll!
   poll_id: Int!
   question_id: Int!
 }

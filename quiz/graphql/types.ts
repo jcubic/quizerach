@@ -41,22 +41,30 @@ export const Answer = objectType({
             type: User,
             resolve: async (parent, _args, ctx) => {
                 const { user_id } = parent;
-                return ctx.prisma.user.findUnique({
+                const user = await ctx.prisma.user.findUnique({
                     where: {
                         user_id
                     }
                 });
+                if (!user) {
+                    throw new Error(`user with id ${user_id} not found`);
+                }
+                return user;
             }
         });
         t.nonNull.field('question', {
             type: Question,
             resolve: async (parent, _args, ctx) => {
                 const { question_id } = parent;
-                return ctx.prisma.question.findUnique({
+                const question = await ctx.prisma.question.findUnique({
                     where: {
                         question_id
                     }
                 });
+                if (!question) {
+                    throw new Error(`question with id ${question_id} not found`);
+                }
+                return question;
             }
         });
     }
@@ -69,7 +77,7 @@ export const Option = objectType({
         t.nonNull.int('question_id');
         t.nonNull.string('label');
         t.nonNull.boolean('valid');
-        t.nonNull.field('question', {
+        t.field('question', {
             type: Question,
             resolve: async (parent, _args, ctx) => {
                 const { question_id } = parent;
@@ -113,6 +121,21 @@ export const Question = objectType({
                 });
             }
         });
+        t.nonNull.field('poll', {
+            type: Poll,
+            resolve: async (parent, _args, ctx) => {
+                const { poll_id } = parent;
+                const poll = await ctx.prisma.poll.findUnique({
+                    where: {
+                        poll_id
+                    }
+                });
+                if (!poll) {
+                    throw new Error(`Poll with id ${poll_id} not found`);
+                }
+                return poll;
+            }
+        });
         t.nonNull.list.nonNull.field('options', {
             type: Option,
             resolve: async (parent, _args, ctx) => {
@@ -127,13 +150,40 @@ export const Question = objectType({
     }
 });
 
+export const Poll = objectType({
+    name: 'Poll',
+    definition(t) {
+        t.nonNull.int('poll_id');
+        t.nonNull.int('set_id');
+        t.nonNull.string('name');
+        t.nonNull.string('slug');
+        t.nonNull.list.nonNull.field('questions', {
+            type: Question,
+            resolve: async (parent, _args, ctx) => {
+                const { poll_id } = parent;
+                return ctx.prisma.question.findMany({
+                    where: {
+                        poll_id
+                    }
+                });
+            }
+        });
+    }
+});
+
 export const Query = extendType({
     type: 'Query',
     definition(t) {
         t.nonNull.list.field('users', {
             type: User,
             resolve: async (_root, _args, ctx) => {
-                return ctx.prisma.user.findMany();
+                const users = await ctx.prisma.user.findMany();
+                return users.map((user) => ({
+                    email: user.email,
+                    token: user.token,
+                    token_expiration: user.token_expiration,
+                    user_id: user.user_id
+                }));
             }
         });
         t.nonNull.list.field('questions', {

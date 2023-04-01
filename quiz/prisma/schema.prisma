@@ -63,7 +63,7 @@ model Set {
 
 model User {
   user_id          Int         @id @default(autoincrement())
-  email            String?     @unique @db.VarChar(256)
+  email            String      @unique @db.VarChar(256)
   token            String?     @db.VarChar(40)
   token_expiration DateTime    @default(now())
   Answer           Answer[]

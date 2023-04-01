@@ -56,6 +56,12 @@ export interface NexusGenObjects {
     question_id: number; // Int!
     valid: boolean; // Boolean!
   }
+  Poll: { // root type
+    name: string; // String!
+    poll_id: number; // Int!
+    set_id: number; // Int!
+    slug: string; // String!
+  }
   Query: {};
   Question: { // root type
     intro_text: string; // String!
@@ -94,9 +100,16 @@ export interface NexusGenFieldTypes {
     answers: NexusGenRootTypes['Answer'][]; // [Answer!]!
     label: string; // String!
     option_id: number; // Int!
-    question: NexusGenRootTypes['Question']; // Question!
+    question: NexusGenRootTypes['Question'] | null; // Question
     question_id: number; // Int!
     valid: boolean; // Boolean!
+  }
+  Poll: { // field return type
+    name: string; // String!
+    poll_id: number; // Int!
+    questions: NexusGenRootTypes['Question'][]; // [Question!]!
+    set_id: number; // Int!
+    slug: string; // String!
   }
   Query: { // field return type
     questions: Array<NexusGenRootTypes['Question'] | null>; // [Question]!
@@ -107,6 +120,7 @@ export interface NexusGenFieldTypes {
     intro_text: string; // String!
     options: NexusGenRootTypes['Option'][]; // [Option!]!
     outro_text: string; // String!
+    poll: NexusGenRootTypes['Poll']; // Poll!
     poll_id: number; // Int!
     question_id: number; // Int!
   }
@@ -136,6 +150,13 @@ export interface NexusGenFieldTypeNames {
     question_id: 'Int'
     valid: 'Boolean'
   }
+  Poll: { // field return type name
+    name: 'String'
+    poll_id: 'Int'
+    questions: 'Question'
+    set_id: 'Int'
+    slug: 'String'
+  }
   Query: { // field return type name
     questions: 'Question'
     users: 'User'
@@ -145,6 +166,7 @@ export interface NexusGenFieldTypeNames {
     intro_text: 'String'
     options: 'Option'
     outro_text: 'String'
+    poll: 'Poll'
     poll_id: 'Int'
     question_id: 'Int'
   }
