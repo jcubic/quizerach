@@ -4,7 +4,7 @@
  */
 
 
-import type { Context } from "./../context"
+import type { Context } from "./context"
 import type { core } from "nexus"
 declare global {
   interface NexusGenCustomInputMethods<TypeName extends string> {
@@ -44,12 +44,30 @@ export interface NexusGenScalars {
 }
 
 export interface NexusGenObjects {
+  Answer: { // root type
+    answer?: string | null; // String
+    answer_id: number; // Int!
+    question_id: number; // Int!
+    user_id: number; // Int!
+  }
+  Option: { // root type
+    label: string; // String!
+    option_id: number; // Int!
+    question_id: number; // Int!
+    valid: boolean; // Boolean!
+  }
   Query: {};
+  Question: { // root type
+    intro_text: string; // String!
+    outro_text: string; // String!
+    poll_id: number; // Int!
+    question_id: number; // Int!
+  }
   User: { // root type
-    email?: string | null; // String
-    id?: string | null; // ID
+    email: string; // String!
     token?: string | null; // String
     token_expiration?: NexusGenScalars['DateTime'] | null; // DateTime
+    user_id: number; // Int!
   }
 }
 
@@ -64,26 +82,78 @@ export type NexusGenRootTypes = NexusGenObjects
 export type NexusGenAllTypes = NexusGenRootTypes & NexusGenScalars
 
 export interface NexusGenFieldTypes {
+  Answer: { // field return type
+    answer: string | null; // String
+    answer_id: number; // Int!
+    question: NexusGenRootTypes['Question']; // Question!
+    question_id: number; // Int!
+    user: NexusGenRootTypes['User']; // User!
+    user_id: number; // Int!
+  }
+  Option: { // field return type
+    answers: NexusGenRootTypes['Answer'][]; // [Answer!]!
+    label: string; // String!
+    option_id: number; // Int!
+    question: NexusGenRootTypes['Question']; // Question!
+    question_id: number; // Int!
+    valid: boolean; // Boolean!
+  }
   Query: { // field return type
+    questions: Array<NexusGenRootTypes['Question'] | null>; // [Question]!
     users: Array<NexusGenRootTypes['User'] | null>; // [User]!
   }
+  Question: { // field return type
+    answers: NexusGenRootTypes['Answer'][]; // [Answer!]!
+    intro_text: string; // String!
+    options: NexusGenRootTypes['Option'][]; // [Option!]!
+    outro_text: string; // String!
+    poll_id: number; // Int!
+    question_id: number; // Int!
+  }
   User: { // field return type
-    email: string | null; // String
-    id: string | null; // ID
+    answers: NexusGenRootTypes['Answer'][]; // [Answer!]!
+    email: string; // String!
     token: string | null; // String
     token_expiration: NexusGenScalars['DateTime'] | null; // DateTime
+    user_id: number; // Int!
   }
 }
 
 export interface NexusGenFieldTypeNames {
+  Answer: { // field return type name
+    answer: 'String'
+    answer_id: 'Int'
+    question: 'Question'
+    question_id: 'Int'
+    user: 'User'
+    user_id: 'Int'
+  }
+  Option: { // field return type name
+    answers: 'Answer'
+    label: 'String'
+    option_id: 'Int'
+    question: 'Question'
+    question_id: 'Int'
+    valid: 'Boolean'
+  }
   Query: { // field return type name
+    questions: 'Question'
     users: 'User'
   }
+  Question: { // field return type name
+    answers: 'Answer'
+    intro_text: 'String'
+    options: 'Option'
+    outro_text: 'String'
+    poll_id: 'Int'
+    question_id: 'Int'
+  }
   User: { // field return type name
+    answers: 'Answer'
     email: 'String'
-    id: 'ID'
     token: 'String'
     token_expiration: 'DateTime'
+    user_id: 'Int'
   }
 }
 
