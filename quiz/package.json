@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint . --ext .ts",
-    "watch": "nodemon app.ts",
+    "watch": "nodemon --transpile-only app.ts",
     "build": "tsc && cp -r public views graphql favicon package.json prisma yarn.lock dist/ && find dist -name '*.ts' | xargs rm",
     "valid": "npx depngn 16",
     "generate": "concurrently \"yarn generate:nexus\" \"yarn generate:prisma\"",
@@ -24,7 +24,6 @@
     "express-session": "^1.17.3",
     "graphql": "^16.6.0",
     "graphql-scalars": "^1.21.3",
-    "graphql-tag": "^2.12.6",
     "marked": "^4.2.12",
     "morgan": "^1.10.0",
     "nexus": "^1.3.0",

@@ -8,43 +8,12 @@ import { ApolloServerPluginLandingPageGraphQLPlayground } from '@apollo/server-p
 
 import prisma from '../prisma';
 import { Context } from './context';
+import { schema } from './nexus';
 export { create_context } from './context';
-
-const typeDefs = gql(fs.readFileSync(path.join(__dirname, 'schema.graphql'), 'utf8'));
-
-type UserArgs = {
-  id?: number;
-  email?: string;
-};
-
-const resolvers = {
-    DateTime: GraphQLDateTime,
-    Query: {
-        user: (parent: any, args: UserArgs) => {
-            const { id, email } = args;
-            if (email) {
-                return prisma.user.findUnique({
-                    where: {
-                        email: email
-                    }
-                });
-            }
-            return prisma.user.findUnique({
-                where: {
-                    user_id: id,
-                }
-            });
-        },
-        users: () => {
-            return prisma.user.findMany();
-        }
-    }
-};
 
 export const apollo_server = (httpServer: any) => {
     return new ApolloServer<Partial<Context>>({
-        typeDefs,
-        resolvers,
+        schema,
         plugins: [
             ApolloServerPluginDrainHttpServer({ httpServer }),
             ApolloServerPluginLandingPageGraphQLPlayground()
