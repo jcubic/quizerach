@@ -7,7 +7,10 @@
     "lint": "eslint . --ext .ts",
     "watch": "nodemon app.ts",
     "build": "tsc && cp -r public views graphql favicon package.json prisma yarn.lock dist/ && find dist -name '*.ts' | xargs rm",
-    "valid": "npx depngn 16"
+    "valid": "npx depngn 16",
+    "generate": "concurrently \"yarn generate:nexus\" \"yarn generate:prisma\"",
+    "generate:nexus": "ts-node --transpile-only ./graphql/nexus",
+    "generate:prisma": "prisma generate"
   },
   "dependencies": {
     "@apollo/server": "^4.5.0",
@@ -41,6 +44,7 @@
     "@types/uuid": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
+    "concurrently": "^8.0.1",
     "eslint": "^8.35.0",
     "nodemon": "^2.0.22",
     "prisma": "^4.12.0",

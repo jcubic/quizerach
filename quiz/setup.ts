@@ -12,7 +12,7 @@ import { expressMiddleware } from '@apollo/server/express4';
 import { unique_token } from './utils';
 import { secret, rate_limit } from './config';
 import { with_redirect } from './middleware';
-import { apolloServer } from './graphql';
+import { apollo_server, create_context } from './graphql';
 
 const limiter = rateLimit({
   windowMs: rate_limit.timer,
@@ -49,14 +49,14 @@ declare module "express-session" {
 
 export const start = async (port: number, callback: () => void) => {
     const httpServer = http.createServer(app);
-    const server = apolloServer(httpServer);
+    const server = apollo_server(httpServer);
     await server.start();
     app.use(
         '/api/',
         cors<cors.CorsRequest>({ origin: "*" }),
         json(),
         expressMiddleware(server, {
-            context: async ({ req }) => ({ token: !!req.session.admin }),
+            context: create_context
         }),
     );
     httpServer.listen({ port }, callback);

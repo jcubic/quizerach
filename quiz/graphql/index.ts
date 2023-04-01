@@ -7,10 +7,8 @@ import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHt
 import { ApolloServerPluginLandingPageGraphQLPlayground } from '@apollo/server-plugin-landing-page-graphql-playground';
 
 import prisma from '../prisma';
-
-interface Context {
-  admin?: boolean;
-}
+import { Context } from './context';
+export { create_context } from './context';
 
 const typeDefs = gql(fs.readFileSync(path.join(__dirname, 'schema.graphql'), 'utf8'));
 
@@ -43,8 +41,8 @@ const resolvers = {
     }
 };
 
-export const apolloServer = (httpServer: any) => {
-    return new ApolloServer<Context>({
+export const apollo_server = (httpServer: any) => {
+    return new ApolloServer<Partial<Context>>({
         typeDefs,
         resolvers,
         plugins: [
