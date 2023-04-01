@@ -18,15 +18,20 @@ jobs:
         with:
           node-version: '16'
       - name: Install Yarn
-        working-directory: ./quiz
         run: npm install -g yarn
 
-      - name: Install dependencies
+      - name: Install base
+        run: yarn install --frozen-lockfile
+
+      - name: Install quiz dependencies
         working-directory: ./quiz
         run: yarn install --frozen-lockfile
 
-      - name: Build TypeScript
-        working-directory: ./quiz
+      - name: Install admin dependencies
+        working-directory: ./admin
+        run: yarn install --frozen-lockfile
+
+      - name: Build Projects
         run: yarn build
 
       - name: Configure SSH key

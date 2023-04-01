@@ -53,7 +53,7 @@ export const start = async (port: number, callback: () => void) => {
     await server.start();
     app.use(
         '/api/',
-        cors<cors.CorsRequest>(),
+        cors<cors.CorsRequest>({ origin: "*" }),
         json(),
         expressMiddleware(server, {
             context: async ({ req }) => ({ token: !!req.session.admin }),

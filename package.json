@@ -1,0 +1,19 @@
+{
+  "name": "quiz",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:jcubic/quizerach.git",
+  "author": "Jakub T. Jankiewicz <jcubic@onet.pl> (https://jcubic.pl/me/)",
+  "license": "MIT",
+  "scripts": {
+    "quiz": "npm run watch --prefix quiz",
+    "admin": "npm run dev --prefix admin",
+    "dev": "concurrently \"npm run admin\" \"npm run quiz\"",
+    "build:quiz": "npm run build --prefix quiz",
+    "build:admin": "npm run build --prefix admin",
+    "build": "concurrently \"npm run build:quiz\" \"npm run build:admin\""
+  },
+  "dependencies": {
+    "concurrently": "^8.0.1"
+  }
+}
