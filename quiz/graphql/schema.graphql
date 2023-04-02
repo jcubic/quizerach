@@ -35,7 +35,7 @@ type Poll {
 
 type Query {
   questions: [Question]!
-  users: [User]!
+  users(where: UserWhereInput): [User]!
 }
 
 type Question {
@@ -48,10 +48,20 @@ type Question {
   question_id: Int!
 }
 
+input StringFilterInput {
+  contains: String
+}
+
 type User {
   answers: [Answer!]!
   email: String!
   token: String
   token_expiration: DateTime
   user_id: Int!
+}
+
+input UserWhereInput {
+  email: String
+  filter: StringFilterInput
+  user_id: Int
 }

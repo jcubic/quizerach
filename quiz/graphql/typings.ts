@@ -29,6 +29,14 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  StringFilterInput: { // input type
+    contains?: string | null; // String
+  }
+  UserWhereInput: { // input type
+    email?: string | null; // String
+    filter?: NexusGenInputs['StringFilterInput'] | null; // StringFilterInput
+    user_id?: number | null; // Int
+  }
 }
 
 export interface NexusGenEnums {
@@ -180,6 +188,11 @@ export interface NexusGenFieldTypeNames {
 }
 
 export interface NexusGenArgTypes {
+  Query: {
+    users: { // args
+      where?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput
+    }
+  }
 }
 
 export interface NexusGenAbstractTypeMembers {
@@ -190,7 +203,7 @@ export interface NexusGenTypeInterfaces {
 
 export type NexusGenObjectNames = keyof NexusGenObjects;
 
-export type NexusGenInputNames = never;
+export type NexusGenInputNames = keyof NexusGenInputs;
 
 export type NexusGenEnumNames = never;
 

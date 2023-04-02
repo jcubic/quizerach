@@ -1,13 +1,14 @@
-import { objectType, extendType, asNexusMethod } from 'nexus';
 import { GraphQLDateTime } from 'graphql-scalars';
+import {
+    objectType,
+    inputObjectType,
+    extendType,
+    asNexusMethod,
+    nonNull,
+    arg
+} from 'nexus';
 
-export const GQLDate = asNexusMethod(GraphQLDateTime, 'date')
-
-
-type UserArgs = {
-  id?: number;
-  email?: string;
-};
+export const GQLDate = asNexusMethod(GraphQLDateTime, 'date');
 
 export const User = objectType({
     name: 'User',
@@ -171,13 +172,57 @@ export const Poll = objectType({
     }
 });
 
+export const UserWhereInput = inputObjectType({
+    name: 'UserWhereInput',
+    definition(t) {
+        t.int('user_id');
+        t.string('email');
+        t.field('filter', {
+            type: 'StringFilterInput'
+        });
+    }
+});
+
+export const StringFilterInput = inputObjectType({
+  name: 'StringFilterInput',
+  definition(t) {
+    t.string('contains');
+  },
+});
+
 export const Query = extendType({
     type: 'Query',
     definition(t) {
         t.nonNull.list.field('users', {
             type: User,
-            resolve: async (_root, _args, ctx) => {
-                const users = await ctx.prisma.user.findMany();
+            args: {
+                where: arg({
+                    type: 'UserWhereInput'
+                })
+            },
+            resolve: async (_root, { where }, ctx) => {
+                let whereClause = {};
+                if (where?.email) {
+                    const {
+                        email,
+                        user_id
+                    } = where;
+                    whereClause = {
+                        email,
+                        user_id
+                    };
+                }
+                if (where?.filter) {
+                    const { contains } = where.filter;
+                    whereClause = {
+                        email: {
+                            contains
+                        }
+                    }
+                }
+                const users = await ctx.prisma.user.findMany({
+                    where: whereClause
+                });
                 return users.map((user) => ({
                     email: user.email,
                     token: user.token,
