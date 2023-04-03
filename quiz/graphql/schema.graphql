@@ -74,7 +74,7 @@ type User {
 }
 
 input UserWhereInput {
-  email: String!
+  email: String
   filter: StringFilterInput
-  user_id: Int!
+  user_id: Int
 }

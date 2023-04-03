@@ -33,9 +33,9 @@ export interface NexusGenInputs {
     contains?: string | null; // String
   }
   UserWhereInput: { // input type
-    email: string; // String!
+    email?: string | null; // String
     filter?: NexusGenInputs['StringFilterInput'] | null; // StringFilterInput
-    user_id: number; // Int!
+    user_id?: number | null; // Int
   }
 }
 

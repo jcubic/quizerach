@@ -210,8 +210,8 @@ export const Set = objectType({
 export const UserWhereInput = inputObjectType({
     name: 'UserWhereInput',
     definition(t) {
-        t.field(UserP.user_id);
-        t.field(UserP.email);
+        t.int('user_id');
+        t.string('email');
         t.field('filter', {
             type: 'StringFilterInput'
         });
