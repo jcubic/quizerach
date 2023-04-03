@@ -11,7 +11,11 @@ export const apollo_server = (httpServer: any) => {
         schema,
         plugins: [
             ApolloServerPluginDrainHttpServer({ httpServer }),
-            ApolloServerPluginLandingPageGraphQLPlayground()
+            ApolloServerPluginLandingPageGraphQLPlayground({
+                settings: {
+                    'request.credentials': 'include'
+                }
+            })
         ],
         introspection: true
     });
