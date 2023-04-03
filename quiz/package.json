@@ -1,13 +1,13 @@
 {
   "name": "quiz",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "lint": "eslint . --ext .ts",
     "prod:install": "yarn install --frozen-lockfile --production && yarn generate",
     "watch": "nodemon --transpile-only app.ts",
-    "build": "yarn generate && tsc && cp -r public views graphql favicon package.json prisma yarn.lock dist/ && find dist -name '*.ts' | xargs rm",
+    "build": "yarn generate && tsc && cp -r public views graphql favicon package.json prisma yarn.lock .yarnrc dist/ && find dist -name '*.ts' | xargs rm",
     "valid": "npx depngn 16",
     "schema": "echo -e $(get-graphql-schema http://localhost:3000/api --json) > schema.json",
     "generate": "yarn generate:prisma && yarn generate:nexus",
