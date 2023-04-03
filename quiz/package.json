@@ -6,10 +6,10 @@
   "scripts": {
     "lint": "eslint . --ext .ts",
     "watch": "nodemon --transpile-only app.ts",
-    "build": "tsc && cp -r public views graphql favicon package.json prisma yarn.lock dist/ && find dist -name '*.ts' | xargs rm",
+    "build": "yarn generate && tsc && cp -r public views graphql favicon package.json prisma yarn.lock dist/ && find dist -name '*.ts' | xargs rm",
     "valid": "npx depngn 16",
     "schema": "echo -e $(get-graphql-schema http://localhost:3000/api --json) > schema.json",
-    "generate": "concurrently \"yarn generate:nexus\" \"yarn generate:prisma\"",
+    "generate": "yarn generate:prisma && yarn generate:nexus",
     "generate:nexus": "ts-node --transpile-only ./graphql/nexus",
     "generate:prisma": "prisma generate"
   },
@@ -44,7 +44,6 @@
     "@types/uuid": "^9.0.1",
     "@typescript-eslint/eslint-plugin": "^5.54.0",
     "@typescript-eslint/parser": "^5.54.0",
-    "concurrently": "^8.0.1",
     "eslint": "^8.35.0",
     "get-graphql-schema": "^2.1.2",
     "nodemon": "^2.0.22",
