@@ -37,8 +37,9 @@ type Poll {
 }
 
 type Query {
-  questions: [Question]!
-  users(where: UserWhereInput): [User]!
+  questions: [Question!]!
+  sets: [Set!]!
+  users(where: UserWhereInput): [User!]!
 }
 
 "## Question\n"
@@ -52,6 +53,13 @@ type Question {
   question_id: Int!
 }
 
+"## Set\n"
+type Set {
+  name: String!
+  polls: [Poll!]!
+  set_id: Int!
+}
+
 input StringFilterInput {
   contains: String
 }
@@ -61,12 +69,12 @@ type User {
   answers: [Answer!]!
   email: String!
   token: String
-  token_expiration: DateTime
+  token_expiration: DateTime!
   user_id: Int!
 }
 
 input UserWhereInput {
-  email: String
+  email: String!
   filter: StringFilterInput
-  user_id: Int
+  user_id: Int!
 }

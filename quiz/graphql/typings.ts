@@ -33,9 +33,9 @@ export interface NexusGenInputs {
     contains?: string | null; // String
   }
   UserWhereInput: { // input type
-    email?: string | null; // String
+    email: string; // String!
     filter?: NexusGenInputs['StringFilterInput'] | null; // StringFilterInput
-    user_id?: number | null; // Int
+    user_id: number; // Int!
   }
 }
 
@@ -77,10 +77,14 @@ export interface NexusGenObjects {
     poll_id: number; // Int!
     question_id: number; // Int!
   }
+  Set: { // root type
+    name: string; // String!
+    set_id: number; // Int!
+  }
   User: { // root type
     email: string; // String!
     token?: string | null; // String
-    token_expiration?: NexusGenScalars['DateTime'] | null; // DateTime
+    token_expiration: NexusGenScalars['DateTime']; // DateTime!
     user_id: number; // Int!
   }
 }
@@ -120,8 +124,9 @@ export interface NexusGenFieldTypes {
     slug: string; // String!
   }
   Query: { // field return type
-    questions: Array<NexusGenRootTypes['Question'] | null>; // [Question]!
-    users: Array<NexusGenRootTypes['User'] | null>; // [User]!
+    questions: NexusGenRootTypes['Question'][]; // [Question!]!
+    sets: NexusGenRootTypes['Set'][]; // [Set!]!
+    users: NexusGenRootTypes['User'][]; // [User!]!
   }
   Question: { // field return type
     answers: NexusGenRootTypes['Answer'][]; // [Answer!]!
@@ -132,11 +137,16 @@ export interface NexusGenFieldTypes {
     poll_id: number; // Int!
     question_id: number; // Int!
   }
+  Set: { // field return type
+    name: string; // String!
+    polls: NexusGenRootTypes['Poll'][]; // [Poll!]!
+    set_id: number; // Int!
+  }
   User: { // field return type
     answers: NexusGenRootTypes['Answer'][]; // [Answer!]!
     email: string; // String!
     token: string | null; // String
-    token_expiration: NexusGenScalars['DateTime'] | null; // DateTime
+    token_expiration: NexusGenScalars['DateTime']; // DateTime!
     user_id: number; // Int!
   }
 }
@@ -167,6 +177,7 @@ export interface NexusGenFieldTypeNames {
   }
   Query: { // field return type name
     questions: 'Question'
+    sets: 'Set'
     users: 'User'
   }
   Question: { // field return type name
@@ -177,6 +188,11 @@ export interface NexusGenFieldTypeNames {
     poll: 'Poll'
     poll_id: 'Int'
     question_id: 'Int'
+  }
+  Set: { // field return type name
+    name: 'String'
+    polls: 'Poll'
+    set_id: 'Int'
   }
   User: { // field return type name
     answers: 'Answer'
