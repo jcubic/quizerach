@@ -52,6 +52,7 @@ input StringFilterInput {
   contains: String
 }
 
+"\n## User\n\nUser is object that represent a user that start a quiz.\nThe most important thing about User is his email that is\nunique identefier that is used to login and take part in\na quiz.\n\nThe user model also have other data that is in database\nlike token and token_expiration time for user to login to the\ntake part in a quiz.\n"
 type User {
   answers: [Answer!]!
   email: String!
