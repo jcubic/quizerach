@@ -27,7 +27,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(session({
     secret,
-    resave: false,
+    resave: true,
     genid: unique_token,
     saveUninitialized: true,
     cookie: { httpOnly: true, maxAge: 60*60*1000 },
@@ -57,7 +57,7 @@ export const start = async (port: number, callback: () => void) => {
         json(),
         expressMiddleware(server, {
             context: create_context
-        }),
+        })
     );
     httpServer.listen({ port }, callback);
 };
