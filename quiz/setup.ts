@@ -1,5 +1,6 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
 import bodyParser from 'body-parser';
 import session from 'express-session';
 import rateLimit from 'express-rate-limit';
@@ -19,6 +20,8 @@ const limiter = rateLimit({
   max: rate_limit.requests
 });
 
+const log_stream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -36,7 +39,9 @@ app.use(session({
 
 app.use(with_redirect);
 app.use(limiter);
-app.use(morgan('combined'));
+app.use(morgan('combined', {
+    stream: log_stream
+}));
 app.use('/public', express.static('public'));
 app.use('/favicon', express.static('favicon'));
 
