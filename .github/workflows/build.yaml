@@ -32,6 +32,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build Projects
+        working-directory: ./quiz
         run: yarn build
 
       - name: Configure SSH key
@@ -46,7 +47,7 @@ jobs:
 
       - name: Install depenedencies
         working-directory: ./quiz/
-        run: ssh -p ${{ secrets.SSH_PORT}} -o StrictHostKeyChecking=no ${{ secrets.SSH_SERVER }} "cd ${{ secrets.SSH_PATH }} && source ~/.nvm/nvm.sh && nvm use 16 && npm install -g yarn && yarn prod:install"
+        run: ssh -p ${{ secrets.SSH_PORT}} -o StrictHostKeyChecking=no ${{ secrets.SSH_SERVER }} "cd ${{ secrets.SSH_PATH }} && source ~/.nvm/nvm.sh && nvm use 16 && npm install -g yarn && yarn install --frozen-lockfile --production"
 
       - name: Restart App
         run: ssh -p ${{ secrets.SSH_PORT}} -o StrictHostKeyChecking=no ${{ secrets.SSH_SERVER }} "touch ${{ secrets.SSH_PATH }}/tmp/restart.txt"

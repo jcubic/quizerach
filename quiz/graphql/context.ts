@@ -12,6 +12,7 @@ export interface Context {
 export async function create_context(
     { req }: ExpressContextFunctionArgument
 ): Promise<Partial<Context>> {
+
     const admin = req.session.admin === true;
 
     if (!admin && !DEBUG) {
