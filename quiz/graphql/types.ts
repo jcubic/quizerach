@@ -8,22 +8,13 @@ import {
     arg
 } from 'nexus';
 
+import doc from './docs';
+
 export const GQLDate = asNexusMethod(GraphQLDateTime, 'date');
 
 export const User = objectType({
     name: 'User',
-    description: `
-## User
-
-User is object that represent a user that start a quiz.
-The most important thing about User is his email that is
-unique identefier that is used to login and take part in
-a quiz.
-
-The user model also have other data that is in database
-like token and token_expiration time for user to login to the
-take part in a quiz.
-`,
+    description: doc('User'),
     definition(t) {
         t.nonNull.int('user_id');
         t.nonNull.string('email');
@@ -45,6 +36,7 @@ take part in a quiz.
 
 export const Answer = objectType({
     name: 'Answer',
+    description: doc('Answer'),
     definition(t) {
         t.nonNull.int('answer_id');
         t.nonNull.int('user_id');
@@ -85,6 +77,7 @@ export const Answer = objectType({
 
 export const Option = objectType({
     name: 'Option',
+    description: doc('Option'),
     definition(t) {
         t.nonNull.int('option_id');
         t.nonNull.int('question_id');
@@ -118,6 +111,7 @@ export const Option = objectType({
 
 export const Question = objectType({
     name: 'Question',
+    description: doc('Question'),
     definition(t) {
         t.nonNull.int('question_id');
         t.nonNull.int('poll_id');
@@ -165,6 +159,7 @@ export const Question = objectType({
 
 export const Poll = objectType({
     name: 'Poll',
+    description: doc('Poll'),
     definition(t) {
         t.nonNull.int('poll_id');
         t.nonNull.int('set_id');
