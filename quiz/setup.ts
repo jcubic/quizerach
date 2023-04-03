@@ -12,7 +12,7 @@ import { expressMiddleware } from '@apollo/server/express4';
 
 import { unique_token } from './utils';
 import { secret, rate_limit } from './config';
-import { with_redirect } from './middleware';
+import { with_redirect, is_admin } from './middleware';
 import { apollo_server, create_context } from './graphql';
 
 const limiter = rateLimit({
@@ -60,6 +60,7 @@ export const start = async (port: number, callback: () => void) => {
         '/api/',
         cors<cors.CorsRequest>({ origin: "*" }),
         json(),
+        is_admin,
         expressMiddleware(server, {
             context: create_context
         })
