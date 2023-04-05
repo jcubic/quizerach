@@ -1,13 +1,11 @@
-import express from 'express';
+import express, { json, urlencoded } from 'express';
 import path from 'path';
 import fs from 'fs';
-import bodyParser from 'body-parser';
 import session from 'express-session';
 import rateLimit from 'express-rate-limit';
 import morgan from 'morgan';
 import http from 'http';
 import cors from 'cors';
-import { json } from 'body-parser';
 import { expressMiddleware } from '@apollo/server/express4';
 
 import { unique_token } from './utils';
@@ -27,7 +25,8 @@ const app = express();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(urlencoded({ extended: true }));
+
 app.use(session({
     secret,
     resave: true,
@@ -67,5 +66,7 @@ export const start = async (port: number, callback: () => void) => {
     );
     httpServer.listen({ port }, callback);
 };
+
+export type QuizerachApp = typeof app;
 
 export default app;

@@ -4,6 +4,7 @@ import { z } from 'zod';
 import strings from './strings.json';
 import prisma from './prisma';
 import app, { start } from './setup';
+import { terminal } from './terminal';
 
 import { is_admin, is_auth } from './middleware';
 import { render_quiz, format_answer } from './quiz';
@@ -24,6 +25,8 @@ import {
 } from './utils';
 import send_email from './email';
 import { port, admin, ADMIN, ADMIN_LOGIN } from './config';
+
+terminal(app);
 
 app.get('/set/:id?', async function(req: Request, res: Response) {
     if (req.params.id) {
@@ -314,7 +317,6 @@ app.get('/', function(req: Request, res: Response) {
         html: 'DEBUG'
     });
 });
-
 
 start(port, () => {
   console.log(`Quizerach app listening on port ${port}`);

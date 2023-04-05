@@ -1,0 +1,62 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Quizerach Terminal</title>
+    <meta name="Description" content=""/>
+    <link rel="shortcut icon" href=""/>
+    <!-- to get icon for the site, you can use this tool:
+    https://realfavicongenerator.net/
+    -->
+    <style>
+:root {
+    --size: 1.4;
+}
+    </style>
+    <script src="https://cdn.jsdelivr.net/combine/npm/jquery,npm/jquery.terminal/js/jquery.terminal.min.js,npm/jquery.terminal/js/xml_formatting.js,npm/js-polyfills/keyboard.js,npm/prismjs/prism.min.js,npm/jquery.terminal/js/prism.js"></script>
+    <link href="https://cdn.jsdelivr.net/combine/npm/terminal-prism/css/prism-coy.css,npm/jquery.terminal/css/jquery.terminal.min.css" rel="stylesheet" />
+    <template id="greetings">  ___        _                        _
+ / _ \ _   _(_)_______ _ __ __ _  ___| |__
+| | | | | | | |_  / _ \ '__/ _` |/ __| '_ \
+| |_| | |_| | |/ /  __/ | | (_| | (__| | | |
+ \__\_\\__,_|_/___\___|_|  \__,_|\___|_| |_|
+</template>
+    <script>
+
+     $(function() {
+
+         $.terminal.syntax('javascript');
+
+         $('body').terminal(async function(command) {
+             const data = await post('', { command });
+             if (data.error) {
+                 this.error(data.error);
+             } else if (data.result) {
+                 this.echo(data.result);
+             }
+         }, {
+             prompt: 'node> ',
+             greetings: false,
+             onInit() {
+                 this.echo(greetings.innerHTML, {formatters: false});
+             }
+         });
+
+         async function post(url, data) {
+             const res = await fetch(url, {
+                 method: 'POST',
+                 credentials: 'include',
+                 headers: {
+                     'Content-Type': 'application/x-www-form-urlencoded'
+                 },
+                 body: new URLSearchParams(data).toString()
+             });
+             return res.json();
+         }
+     });
+    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+</head>
+<body>
+</body>
+</html>
