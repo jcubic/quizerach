@@ -1,5 +1,18 @@
 import { useQuery } from "@apollo/client";
-import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react';
+import {
+    Heading,
+    Flex,
+    Tabs,
+    TabList,
+    TabPanels,
+    Tab,
+    TabPanel,
+    Textarea,
+    Radio,
+    Stack,
+    FormControl,
+    Input
+} from '@chakra-ui/react';
 
 import { gql } from './__generated__/gql';
 import './App.css';
@@ -45,7 +58,7 @@ function App() {
             {set.polls.map((poll, index) => {
                 return (
                     <li key={`${index} ${poll.name}`}>
-                      <h3>{poll.name}</h3>
+                      <Heading>{poll.name}</Heading>
                       <Tabs>
                         <TabList>
                           {poll.questions.map((question, index) => {
@@ -56,7 +69,7 @@ function App() {
                           })}
                         </TabList>
                         <TabPanels>
-                          {poll.questions.map(question => {
+                          {poll.questions.map((question, index) => {
                               const { question_id: id } = question;
                               return (
                                   <TabPanel key={`panel-${id}`}>
@@ -64,26 +77,42 @@ function App() {
                                       <legend>Question {index + 1}</legend>
                                       <dl>
                                         <dt>Question:</dt>
-                                        <dd><textarea value={question.intro_text} onChange={() => {}} /></dd>
+                                        <dd><Textarea
+                                                size='xl'
+                                                resize={'vertical'}
+                                                value={question.intro_text}
+                                                onChange={() => {}} />
+                                        </dd>
                                         <dt>Options:</dt>
                                         <dd>
-                                          <ul>
-                                            {question.options.map(option => {
-                                                return (
-                                                    <li key={option.option_id}>
-                                                      <input value={option.label} onChange={() => {}} />
-                                                      <input type="radio"
-                                                             name={`q-${id}`}
-                                                             checked={option.valid}
-                                                             onChange={() => {}}
-                                                      />
-                                                    </li>
-                                                );
-                                            })}
-                                          </ul>
+                                          <Stack spacing={5}>
+                                            {question.options.map(({ label, valid }, index) => (
+                                                <FormControl key={index}>
+                                                  <Flex gap={2}>
+                                                    <Input
+                                                        value={label}
+                                                        onChange={() => {}}
+                                                        placeholder="Enter option label"
+                                                    />
+                                                    <Radio
+                                                        name="option"
+                                                        value={label}
+                                                        isChecked={valid}
+                                                        onChange={() => {}}
+                                                    >
+                                                  </Radio>
+                                                  </Flex>
+                                                </FormControl>
+                                            ))}
+                                          </Stack>
                                         </dd>
                                         <dt>Answer:</dt>
-                                        <dd><textarea value={question.outro_text} onChange={() => {}} /></dd>
+                                        <dd><Textarea
+                                                size='sm'
+                                                resize={'vertical'}
+                                                value={question.outro_text}
+                                                onChange={() => {}} />
+                                        </dd>
                                       </dl>
                                     </fieldset>
                                   </TabPanel>

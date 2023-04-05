@@ -19,13 +19,25 @@ const client = new ApolloClient({
   cache
 });
 
-const { Tabs } = chakraTheme.components
+const {
+    Tabs,
+    Textarea,
+    Radio,
+    Heading,
+    Input
+} = chakraTheme.components;
 
 const theme = extendBaseTheme({
-  components: {
-    Tabs
-  }
-})
+    initialColorMode: 'dark',
+    useSystemColorMode: false,
+    components: {
+        Tabs,
+        Textarea,
+        Radio,
+        Heading,
+        Input
+    }
+});
 
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
