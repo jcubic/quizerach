@@ -1214,7 +1214,7 @@
     "@chakra-ui/react-context" "2.0.8"
     "@chakra-ui/shared-utils" "2.0.5"
 
-"@chakra-ui/tabs@2.1.9", "@chakra-ui/tabs@^2.1.9":
+"@chakra-ui/tabs@2.1.9":
   version "2.1.9"
   resolved "https://registry.yarnpkg.com/@chakra-ui/tabs/-/tabs-2.1.9.tgz#2e5214cb453c6cc0c240e82bd88af1042fc6fe0e"
   integrity sha512-Yf8e0kRvaGM6jfkJum0aInQ0U3ZlCafmrYYni2lqjcTtThqu+Yosmo3iYlnullXxCw5MVznfrkb9ySvgQowuYg==

@@ -1,12 +1,11 @@
 import React from 'react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import ReactDOM from 'react-dom/client';
-import { ChakraBaseProvider, extendBaseTheme } from '@chakra-ui/react';
-import chakraTheme from '@chakra-ui/theme';
+import { ChakraProvider } from '@chakra-ui/react';
 
 import App from './App';
-import './index.css';
 import { GRAPHQL_ENDPOINT } from '../config';
+import { theme } from './theme';
 
 
 const cache = new InMemoryCache({
@@ -19,33 +18,12 @@ const client = new ApolloClient({
   cache
 });
 
-const {
-    Tabs,
-    Textarea,
-    Radio,
-    Heading,
-    Input
-} = chakraTheme.components;
-
-const theme = extendBaseTheme({
-    initialColorMode: 'dark',
-    useSystemColorMode: false,
-    components: {
-        Tabs,
-        Textarea,
-        Radio,
-        Heading,
-        Input
-    }
-});
-
-
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
       <ApolloProvider client={client}>
-        <ChakraBaseProvider theme={theme}>
+        <ChakraProvider theme={theme}>
           <App />
-        </ChakraBaseProvider>
+        </ChakraProvider>
       </ApolloProvider>
     </React.StrictMode>,
 );

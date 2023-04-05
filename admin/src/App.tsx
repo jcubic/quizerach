@@ -15,7 +15,6 @@ import {
 } from '@chakra-ui/react';
 
 import { gql } from './__generated__/gql';
-import './App.css';
 
 
 const POLL_SET = gql(`
@@ -45,8 +44,11 @@ function App() {
     if (loading) {
         return <p>Loading...</p>;
     }
-    if (error || !data) {
-        return <p className="error">{error?.message ?? 'no data'}</p>;
+    if (error) {
+        return <p className="error">{error.message}</p>;
+    }
+    if (!data) {
+        return <p className="error">no data</p>;
     }
     const { sets: [set] } = data;
 
