@@ -17,6 +17,13 @@ import {
 } from 'nexus-prisma';
 
 import doc from './docs';
+import logger from '../logger';
+
+
+function error(message: string): never {
+    logger.error(`GQL Error: ${message}`);
+    throw new Error(message);
+}
 
 export const GQLDate = asNexusMethod(GraphQLDateTime, 'date');
 
@@ -60,7 +67,7 @@ export const Answer = objectType({
                     }
                 });
                 if (!user) {
-                    throw new Error(`user with id ${user_id} not found`);
+                    error(`user with id ${user_id} not found`)
                 }
                 return user;
             }
@@ -75,7 +82,7 @@ export const Answer = objectType({
                     }
                 });
                 if (!question) {
-                    throw new Error(`question with id ${question_id} not found`);
+                    error(`question with id ${question_id} not found`);
                 }
                 return question;
             }
@@ -146,7 +153,7 @@ export const Question = objectType({
                     }
                 });
                 if (!poll) {
-                    throw new Error(`Poll with id ${poll_id} not found`);
+                    error(`Poll with id ${poll_id} not found`);
                 }
                 return poll;
             }
