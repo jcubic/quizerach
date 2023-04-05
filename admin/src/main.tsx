@@ -1,7 +1,7 @@
 import React from 'react';
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import ReactDOM from 'react-dom/client';
-import { ChakraProvider } from '@chakra-ui/react';
+import { ChakraBaseProvider } from '@chakra-ui/react';
 
 import App from './App';
 import { GRAPHQL_ENDPOINT } from '../config';
@@ -21,9 +21,9 @@ const client = new ApolloClient({
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
     <React.StrictMode>
       <ApolloProvider client={client}>
-        <ChakraProvider theme={theme}>
+        <ChakraBaseProvider theme={theme}>
           <App />
-        </ChakraProvider>
+        </ChakraBaseProvider>
       </ApolloProvider>
     </React.StrictMode>,
 );

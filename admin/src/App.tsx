@@ -66,7 +66,7 @@ function App() {
                           {poll.questions.map((question, index) => {
                               const { question_id: id } = question;
                               return (
-                                  <Tab key={`tab-${id}`}>{index}</Tab>
+                                  <Tab key={`tab-${id}`}>{index + 1}</Tab>
                               );
                           })}
                         </TabList>
@@ -79,11 +79,12 @@ function App() {
                                       <legend>Question {index + 1}</legend>
                                       <dl>
                                         <dt>Question:</dt>
-                                        <dd><Textarea
-                                                size='xl'
-                                                resize={'vertical'}
-                                                value={question.intro_text}
-                                                onChange={() => {}} />
+                                        <dd>
+                                          <Textarea
+                                              size='xl'
+                                              resize={'vertical'}
+                                              value={question.intro_text}
+                                              onChange={() => {}} />
                                         </dd>
                                         <dt>Options:</dt>
                                         <dd>
@@ -98,11 +99,10 @@ function App() {
                                                     />
                                                     <Radio
                                                         name="option"
-                                                        value={label}
+                                                        value={index.toString()}
                                                         isChecked={valid}
                                                         onChange={() => {}}
-                                                    >
-                                                  </Radio>
+                                                    />
                                                   </Flex>
                                                 </FormControl>
                                             ))}
