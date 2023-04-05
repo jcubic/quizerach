@@ -1,35 +1,66 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './App.css';
+import { useQuery } from "@apollo/client";
+import { gql } from './__generated__/gql';
+
+const POLL_SET = gql(`
+query PollSet {
+  sets {
+    name
+    polls {
+      name
+      questions {
+        intro_text
+        outro_text
+        options {
+          label
+          valid
+        }
+      }
+    }
+  }
+}
+`);
 
 function App() {
-  const [count, setCount] = useState(0)
+    const { loading, error, data } = useQuery(POLL_SET);
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+    if (loading) {
+        return <p>Loading...</p>;
+    }
+    if (error || !data) {
+        return <p className="error">{error.message}</p>;
+    }
+    const { sets: [set] } = data;
+
+    return (
+        <div className="App">
+          <h1>Quizerach: Admin</h1>
+          {<h2>Set: {set.name}</h2>}
+          <ul>
+            {set.polls.map((poll, index) => {
+                return (
+                    <li key={`${index} ${poll.name}`}>
+                      <h3>{poll.name}</h3>
+                      <ul>
+                        {poll.questions.map(question => {
+                            return (
+                                <li>
+                                  <dl>
+                                    <dt>Question:</dt>
+                                    <dd><textarea value={question.intro_text}/></dd>
+                                    <dt>Answer:</dt>
+                                    <dd><textarea value={question.outro_text}/></dd>
+                                  </dl>
+                                </li>
+                            );
+                        })}
+                      </ul>
+                    </li>
+                );
+            })}
+          </ul>
+        </div>
+    );
 }
 
-export default App
+export default App;

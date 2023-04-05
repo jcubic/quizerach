@@ -1,10 +1,27 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App'
-import './index.css'
+import React from 'react';
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import ReactDOM from 'react-dom/client';
+
+import App from './App';
+import './index.css';
+import { GRAPHQL_ENDPOINT } from './config';
+
+
+const cache = new InMemoryCache({
+  addTypename: false,
+  resultCaching: false
+});
+
+const client = new ApolloClient({
+  uri: GRAPHQL_ENDPOINT,
+  cache
+});
+
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-)
+    <React.StrictMode>
+      <ApolloProvider client={client}>
+        <App />
+      </ApolloProvider>
+    </React.StrictMode>,
+);
