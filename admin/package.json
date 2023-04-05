@@ -12,9 +12,16 @@
   },
   "dependencies": {
     "@apollo/client": "^3.7.11",
+    "@chakra-ui/react": "^2.5.5",
+    "@chakra-ui/system": "^2.5.5",
+    "@chakra-ui/tabs": "^2.1.9",
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "framer-motion": "^10.10.0",
     "graphql": "^16.6.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^3.3.0",
