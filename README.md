@@ -1,12 +1,12 @@
 # Quizerach - Quiz App
 
 <p align="center">
-  <img src="/assets/logo.svg" alt="Quizerach Project Logo"/>
+  <img src="https://raw.githubusercontent.com/jcubic/quizerach/master/assets/logo.svg" alt="Quizerach Project Logo"/>
 </p>
 
 **Quizerach** is [Open Source Quiz Maker App](https://github.com/jcubic/quizerach)
 
-![Quiz Screenshot](/assets/screenshot.png)
+![Quiz Screenshot](https://raw.githubusercontent.com/jcubic/quizerach/master/assets/screenshot.png)
 
 ## Genesis of the Name
 **Quizerach** name is a word play on ["Kwisatz Haderach"](https://dune.fandom.com/wiki/Kwisatz_Haderach)
