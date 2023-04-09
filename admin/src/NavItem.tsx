@@ -7,7 +7,7 @@ import {
 type NavHoverBoxT = {
     active?: boolean;
     children: React.ReactNode;
-    onClick: () => void;
+    onClick?: () => void;
 };
 
 export default function NavItem({ children, active = false, ...props }: NavHoverBoxT) {

@@ -1,4 +1,4 @@
-import type { Poll } from './__generated__/graphql';
+import type { Poll_Set_And_UsersQuery } from './__generated__/graphql';
 import {
     Flex,
     Tabs,
@@ -13,6 +13,10 @@ import {
     Input
 } from '@chakra-ui/react';
 
+type Set = Poll_Set_And_UsersQuery["sets"][0];
+type Poll = Set["polls"][0];
+type Question = Poll["questions"][0];
+
 type PollT = {
     data: Poll;
 };
@@ -21,7 +25,7 @@ const Poll = ({ data: poll }: PollT) => {
     return (
         <Tabs>
           <TabList>
-            {poll.questions.map((question, index) => {
+            {poll.questions.map((question: Question, index: number) => {
                 const { question_id: id } = question;
                 return (
                     <Tab key={`tab-${id}`}>{index + 1}</Tab>
@@ -29,7 +33,7 @@ const Poll = ({ data: poll }: PollT) => {
             })}
           </TabList>
           <TabPanels>
-            {poll.questions.map((question) => {
+            {poll.questions.map((question: Question) => {
                 const { question_id: id } = question;
                 return (
                     <TabPanel key={`panel-${id}`}>

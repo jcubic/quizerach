@@ -1,7 +1,7 @@
 import { gql } from './__generated__/gql';
 
 export const POLL_SET = gql(`
-query PollSet {
+query poll_set_and_users {
   sets {
     name
     polls {
@@ -15,6 +15,20 @@ query PollSet {
           label
           valid
         }
+      }
+    }
+  }
+  users {
+    user_id
+    email
+    answers {
+      question {
+        poll {
+          poll_id
+        }
+      }
+      option {
+        valid
       }
     }
   }

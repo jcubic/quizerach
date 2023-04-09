@@ -11,6 +11,7 @@ import NavItem from './NavItem';
 import Sidebar from './Sidebar';
 import PullDown from './PullDown';
 import { POLL_SET } from './queries';
+import { map_users } from './mappings';
 
 function App() {
     const [ selection, setSelection ] = useState<{poll?: number; set?: number}>({});
@@ -28,6 +29,7 @@ function App() {
     const { sets } = data;
 
     const poll = sets[selection.set ?? 0].polls[selection.poll ?? 0];
+    const users = map_users(data.users);
 
     function pickPoll(set: number, poll: number) {
         setSelection({ set, poll });
@@ -50,6 +52,13 @@ function App() {
                               );
                           })}
                         </PullDown>
+                    );
+                })}
+              </PullDown>
+              <PullDown title="Users">
+                {users.map((user, index) => {
+                    return (
+                        <NavItem key={index}>{user.email}</NavItem>
                     );
                 })}
               </PullDown>

@@ -1,4 +1,4 @@
-details > details, details > details > :not(summary) {
+details > :not(summary) {
     margin-left: 1em;
 }
 dt {

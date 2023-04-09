@@ -4,7 +4,6 @@ import {
     inputObjectType,
     extendType,
     asNexusMethod,
-    nonNull,
     arg
 } from 'nexus';
 import {
@@ -56,6 +55,7 @@ export const Answer = objectType({
         t.field(AnswerP.answer_id);
         t.field(AnswerP.user_id);
         t.field(AnswerP.question_id);
+        t.field(AnswerP.option_id);
         t.field(AnswerP.answer);
         t.nonNull.field('user', {
             type: User,
@@ -83,6 +83,21 @@ export const Answer = objectType({
                 });
                 if (!question) {
                     error(`question with id ${question_id} not found`);
+                }
+                return question;
+            }
+        });
+        t.nonNull.field('option', {
+            type: Option,
+            resolve: async (parent, _args, ctx) => {
+                const { option_id } = parent;
+                const question = await ctx.prisma.option.findUnique({
+                    where: {
+                        option_id
+                    }
+                });
+                if (!question) {
+                    error(`option with id ${option_id} not found`);
                 }
                 return question;
             }

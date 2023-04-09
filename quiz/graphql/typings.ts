@@ -55,6 +55,7 @@ export interface NexusGenObjects {
   Answer: { // root type
     answer?: string | null; // String
     answer_id: number; // Int!
+    option_id: number; // Int!
     question_id: number; // Int!
     user_id: number; // Int!
   }
@@ -103,6 +104,8 @@ export interface NexusGenFieldTypes {
   Answer: { // field return type
     answer: string | null; // String
     answer_id: number; // Int!
+    option: NexusGenRootTypes['Option']; // Option!
+    option_id: number; // Int!
     question: NexusGenRootTypes['Question']; // Question!
     question_id: number; // Int!
     user: NexusGenRootTypes['User']; // User!
@@ -155,6 +158,8 @@ export interface NexusGenFieldTypeNames {
   Answer: { // field return type name
     answer: 'String'
     answer_id: 'Int'
+    option: 'Option'
+    option_id: 'Int'
     question: 'Question'
     question_id: 'Int'
     user: 'User'

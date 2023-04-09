@@ -6,6 +6,8 @@
 type Answer {
   answer: String
   answer_id: Int!
+  option: Option!
+  option_id: Int!
   question: Question!
   question_id: Int!
   user: User!
