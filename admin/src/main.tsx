@@ -6,7 +6,7 @@ import { ChakraBaseProvider } from '@chakra-ui/react';
 import App from './App';
 import { GRAPHQL_ENDPOINT } from '../config';
 import { theme } from './theme';
-
+import "./index.css";
 
 const cache = new InMemoryCache({
   addTypename: false,

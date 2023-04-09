@@ -1,29 +1,30 @@
-import { useState } from 'react';
 import { Flex } from '@chakra-ui/react';
 
-type SidebarT = { children: React.ReactNode };
+type SidebarT = {
+    children: React.ReactNode;
+    width: number | string;
+    background?: string;
+};
 
-type NavSize = "large" | "small";
-
-export default function Sidebar({ children }: SidebarT) {
-    const [navSize] = useState<NavSize>('large');
+export default function Sidebar({ children, width, background }: SidebarT) {
     return (
         <Flex
-            pos="sticky"
-            left="5"
+            position="sticky"
+            left="0"
+            top="2.5vh"
+            m="2.5vh 10px"
             h="95vh"
-            marginTop="2.5vh"
-            boxShadow="0 4px 12px 0 rgba(0, 0, 0, 0.05)"
-            borderRadius={navSize == "small" ? "15px" : "30px"}
-            w={navSize == "small" ? "75px" : "200px"}
+            backgroundColor={background ?? '#1a1a1a'}
+            borderRadius={"10px"}
+            w={width}
             flexDir="column"
             justifyContent="space-between"
         >
           <Flex
-              p="5%"
+              p="1.5em"
               flexDir="column"
               w="100%"
-              alignItems={navSize == "small" ? "center" : "flex-start"}
+              alignItems={"flex-start"}
               as="nav">
             {children}
           </Flex>

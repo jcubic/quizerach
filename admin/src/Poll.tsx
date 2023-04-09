@@ -33,48 +33,45 @@ const Poll = ({ data: poll }: PollT) => {
                 const { question_id: id } = question;
                 return (
                     <TabPanel key={`panel-${id}`}>
-                      <fieldset>
-                        <legend>Question {index + 1}</legend>
-                        <dl>
-                          <dt>Question:</dt>
-                          <dd>
-                            <Textarea
-                                height="300px"
+                      <dl>
+                        <Label>Question:</Label>
+                        <dd>
+                          <Textarea
+                              height="300px"
+                              resize={'vertical'}
+                              value={question.intro_text}
+                              onChange={() => {}} />
+                        </dd>
+                        <Label>Options:</Label>
+                        <dd>
+                          <Stack spacing={5}>
+                            {question.options.map(({ label, valid }, index) => (
+                                <FormControl key={index}>
+                                  <Flex gap={2}>
+                                    <Input
+                                        value={label}
+                                        onChange={() => {}}
+                                        placeholder="Enter option label"
+                                    />
+                                    <Radio
+                                        name="option"
+                                        value={index.toString()}
+                                        isChecked={valid}
+                                        onChange={() => {}}
+                                    />
+                                  </Flex>
+                                </FormControl>
+                            ))}
+                          </Stack>
+                        </dd>
+                        <Label>Answer:</Label>
+                        <dd><Textarea
+                                size='sm'
                                 resize={'vertical'}
-                                value={question.intro_text}
+                                value={question.outro_text}
                                 onChange={() => {}} />
-                          </dd>
-                          <dt>Options:</dt>
-                          <dd>
-                            <Stack spacing={5}>
-                              {question.options.map(({ label, valid }, index) => (
-                                  <FormControl key={index}>
-                                    <Flex gap={2}>
-                                      <Input
-                                          value={label}
-                                          onChange={() => {}}
-                                          placeholder="Enter option label"
-                                      />
-                                      <Radio
-                                          name="option"
-                                          value={index.toString()}
-                                          isChecked={valid}
-                                          onChange={() => {}}
-                                      />
-                                    </Flex>
-                                  </FormControl>
-                              ))}
-                            </Stack>
-                          </dd>
-                          <dt>Answer:</dt>
-                          <dd><Textarea
-                                  size='sm'
-                                  resize={'vertical'}
-                                  value={question.outro_text}
-                                  onChange={() => {}} />
-                          </dd>
-                        </dl>
-                      </fieldset>
+                        </dd>
+                      </dl>
                     </TabPanel>
                 );
             })}
@@ -82,5 +79,15 @@ const Poll = ({ data: poll }: PollT) => {
         </Tabs>
     );
 };
+
+type LabelT = {
+    children: React.ReactNode;
+};
+
+const Label = ({ children }: LabelT) => {
+    return (
+        <dt style={{fontWeight: 'bold'}}>{ children }</dt>
+    );
+}
 
 export default Poll;
