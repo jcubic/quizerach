@@ -29,22 +29,22 @@ const Poll = ({ data: poll }: PollT) => {
             })}
           </TabList>
           <TabPanels>
-            {poll.questions.map((question, index) => {
+            {poll.questions.map((question) => {
                 const { question_id: id } = question;
                 return (
                     <TabPanel key={`panel-${id}`}>
                       <dl>
                         <Label>Question:</Label>
-                        <dd>
+                        <Description>
                           <Textarea
                               height="300px"
                               resize={'vertical'}
                               value={question.intro_text}
                               onChange={() => {}} />
-                        </dd>
+                        </Description>
                         <Label>Options:</Label>
-                        <dd>
-                          <Stack spacing={5}>
+                        <Description>
+                          <Stack spacing={2}>
                             {question.options.map(({ label, valid }, index) => (
                                 <FormControl key={index}>
                                   <Flex gap={2}>
@@ -63,14 +63,15 @@ const Poll = ({ data: poll }: PollT) => {
                                 </FormControl>
                             ))}
                           </Stack>
-                        </dd>
+                        </Description>
                         <Label>Answer:</Label>
-                        <dd><Textarea
-                                size='sm'
-                                resize={'vertical'}
-                                value={question.outro_text}
-                                onChange={() => {}} />
-                        </dd>
+                        <Description>
+                          <Textarea
+                              size='sm'
+                              resize={'vertical'}
+                              value={question.outro_text}
+                              onChange={() => {}} />
+                        </Description>
                       </dl>
                     </TabPanel>
                 );
@@ -87,6 +88,14 @@ type LabelT = {
 const Label = ({ children }: LabelT) => {
     return (
         <dt style={{fontWeight: 'bold'}}>{ children }</dt>
+    );
+}
+
+type DescriptionT = LabelT;
+
+const Description = ({ children }: DescriptionT) => {
+    return (
+        <dd>{ children }</dd>
     );
 }
 
