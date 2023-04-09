@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useQuery } from "@apollo/client";
-
 import {
     Heading,
     Flex,
@@ -11,11 +10,10 @@ import Poll from './Poll';
 import NavItem from './NavItem';
 import Sidebar from './Sidebar';
 import PullDown from './PullDown';
-
 import { POLL_SET } from './queries';
 
 function App() {
-    const [ selection, setSelection ] = useState<{poll: number; set: number}>({});
+    const [ selection, setSelection ] = useState<{poll?: number; set?: number}>({});
     const { loading, error, data } = useQuery(POLL_SET);
 
     if (loading) {
@@ -31,7 +29,7 @@ function App() {
 
     const poll = sets[selection.set ?? 0].polls[selection.poll ?? 0];
 
-    function pickPoll(set, poll) {
+    function pickPoll(set: number, poll: number) {
         setSelection({ set, poll });
     }
 
@@ -44,7 +42,7 @@ function App() {
                 {sets.map((set, set_index: number)  => {
                     return (
                         <PullDown key={set_index} title={set.name}>
-                          {set.polls.map((poll: Poll, poll_index: number) => {
+                          {set.polls.map((poll, poll_index: number) => {
                               return (
                                   <NavItem key={poll_index} onClick={() => pickPoll(set_index, poll_index)}>
                                     {poll.name}
