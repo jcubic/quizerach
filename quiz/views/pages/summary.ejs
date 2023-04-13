@@ -25,8 +25,13 @@
       const strings = {many: 'pytań', one: 'pytanie', few: 'pytania'};
       const pr = new Intl.PluralRules('pl-PL');
       %>
-      <p>Odpowiedziałeś(aś) poprawnie na <%= solved %> <%= strings[pr.select(solved)] %></p>
-      <p>Nawet jeśli nie odpowiedziałeś(aś) poprawnie na wszystkie pytania, to wspomoże to twoją pamięć.</p>
+      <% if (questions === solved) { %>
+        <p>Gratuluje!</p>
+        <p>Odpowiedziałeś(aś) poprawnie na wszystkie <%= solved %> <%= strings[pr.select(solved)] %>.</p>
+      <% } else { %>
+        <p>Odpowiedziałeś(aś) poprawnie na <%= solved %> <%= strings[pr.select(solved)] %>.</p>
+        <p>Nawet jeśli nie odpowiedziałeś(aś) poprawnie na wszystkie pytania, to wspomoże to twoją pamięć.</p>
+      <% } %>
     </div>
   </main>
   <%- include('../partials/footer'); %>
