@@ -29,6 +29,11 @@ declare global {
 }
 
 export interface NexusGenInputs {
+  AddPollInput: { // input type
+    name: string; // String!
+    set_id: number; // Int!
+    slug: string; // String!
+  }
   StringFilterInput: { // input type
     contains?: string | null; // String
   }
@@ -59,6 +64,7 @@ export interface NexusGenObjects {
     question_id: number; // Int!
     user_id: number; // Int!
   }
+  Mutation: {};
   Option: { // root type
     label: string; // String!
     option_id: number; // Int!
@@ -110,6 +116,9 @@ export interface NexusGenFieldTypes {
     question_id: number; // Int!
     user: NexusGenRootTypes['User']; // User!
     user_id: number; // Int!
+  }
+  Mutation: { // field return type
+    createPoll: NexusGenRootTypes['Poll']; // Poll!
   }
   Option: { // field return type
     answers: NexusGenRootTypes['Answer'][]; // [Answer!]!
@@ -165,6 +174,9 @@ export interface NexusGenFieldTypeNames {
     user: 'User'
     user_id: 'Int'
   }
+  Mutation: { // field return type name
+    createPoll: 'Poll'
+  }
   Option: { // field return type name
     answers: 'Answer'
     label: 'String'
@@ -209,6 +221,12 @@ export interface NexusGenFieldTypeNames {
 }
 
 export interface NexusGenArgTypes {
+  Mutation: {
+    createPoll: { // args
+      name: string; // String!
+      set_id: number; // Int!
+    }
+  }
   Query: {
     users: { // args
       where?: NexusGenInputs['UserWhereInput'] | null; // UserWhereInput

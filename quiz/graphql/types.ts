@@ -4,6 +4,9 @@ import {
     inputObjectType,
     extendType,
     asNexusMethod,
+    nonNull,
+    intArg,
+    stringArg,
     arg
 } from 'nexus';
 import {
@@ -17,7 +20,7 @@ import {
 
 import doc from './docs';
 import logger from '../logger';
-
+import { slugify } from '../utils';
 
 function error(message: string): never {
     logger.error(`GQL Error: ${message}`);
@@ -244,7 +247,7 @@ export const StringFilterInput = inputObjectType({
   name: 'StringFilterInput',
   definition(t) {
     t.string('contains');
-  },
+  }
 });
 
 export const Query = extendType({
@@ -298,6 +301,39 @@ export const Query = extendType({
             type: Question,
             resolve: async (_root, _args, ctx) => {
                 return ctx.prisma.question.findMany();
+            }
+        });
+    }
+});
+
+export const AddPollInput = inputObjectType({
+    name: 'AddPollInput',
+    definition(t) {
+        t.nonNull.int('set_id');
+        t.nonNull.string('name');
+        t.nonNull.string('slug');
+    }
+});
+
+
+export const Mutation = extendType({
+    type: 'Mutation',
+    definition(t) {
+        t.nonNull.field('createPoll', {
+            type: 'Poll',
+            args: {
+                set_id: nonNull(intArg()),
+                name: nonNull(stringArg())
+            },
+            resolve(_root, { set_id, name } , ctx) {
+                const slug = slugify(name);
+                return ctx.prisma.poll.create({
+                    data: {
+                        set_id,
+                        slug,
+                        name
+                    }
+                });
             }
         });
     }
