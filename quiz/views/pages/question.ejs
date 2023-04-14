@@ -24,6 +24,7 @@
       <% } %>
     </div>
     <div class="question"><%- question %></div>
+    <% if (options.length) { %>
     <ul class="answers<% if (answer) { %> answer<% } %>">
       <% options.forEach(function(option, i) { %>
         <li>
@@ -43,12 +44,18 @@
         </li>
       <% }); %>
     </ul>
+    <% } else { %>
+    <div class="answers open">
+      <textarea class="free<% if (answer) { %> answer<% } %>"<% if (answer) { %> readonly<% } %>><% if (answer) { %><%= answer.text %><% } %></textarea>
+      <button id="save" class="btn"<% if (answer) { %> style="display: none"<% } else { %> disabled<% } %>>Zapisz</button>
+    </div>
+    <% } %>
     <div class="footer">
       <div class="nav">
         <% if (progress.index < progress.max - 1) { %>
-          <button id="next" class="btn"<% if (!answer) { %> disabled<% } %>>Dalej</button>
+          <button id="next" class="btn"<% if (!answer) { %> style="display: none"<% } %>>Dalej</button>
         <% } else { %>
-          <button id="next" class="btn"<% if (!answer) { %> disabled<% } %>>Podsumowanie</button>
+          <button id="next" class="btn"<% if (!answer) { %> style="display: none"<% } %>>Podsumowanie</button>
         <% } %>
       </div>
       <div class="outro"><% if (answer) { %>
@@ -67,13 +74,27 @@
    const $answers = document.querySelector('.answers');
    const $question = document.querySelector('.question');
    const $next = document.querySelector('#next');
-   $answers.addEventListener('click', (e) => {
-       e.preventDefault();
-       const $link = e.target.closest('a');
-       mark_answer($link);
-       validate_answer($link);
-   });
-   $next.addEventListener('click', (e) => {
+   const $free = document.querySelector('.free');
+   const $save = document.querySelector('#save');
+   const $outro = document.querySelector('.outro');
+   if ($free && $save) {
+       $free.addEventListener('input', (e) => {
+           $save.disabled = !$free.value.trim();
+       });
+       $save.addEventListener('click', () => {
+           free_answer();
+       });
+   } else {
+       $answers.addEventListener('click', (e) => {
+           e.preventDefault();
+           const $link = e.target.closest('a');
+           if ($link) {
+               mark_answer($link);
+               validate_answer($link);
+           }
+       });
+   }
+   $next.addEventListener('click', () => {
        const url = new URL(window.location.href);
        if (last) {
            url.searchParams.delete('q');
@@ -89,6 +110,24 @@
            $answers.classList.add('answer');
        }
    }
+   function free_answer() {
+       const text = $free.value.trim();
+       if (text) {
+           const body = new URLSearchParams();
+           body.append('question', question);
+           body.append('text', text);
+           fetch(`/answer/${poll}`, {
+               method: 'post',
+               body
+           }).then(res => res.json())
+             .then(data => {
+                 $outro.innerHTML = `<div>${data.outro}</div>`;
+                 $free.readOnly = true;
+                 $save.style.display = 'none';
+                 $next.style.display = 'block';
+             });
+       }
+   }
    function validate_answer($link) {
        const answer = +$link.dataset.index;
        const body = new URLSearchParams();
@@ -100,7 +139,6 @@
            body
        }).then(res => res.json())
          .then(data => {
-             const $outro = document.querySelector('.outro');
              if (data.error) {
                  $outro.innerHTML = `<p class="error">${data.error}</p>`;
              } else {
@@ -110,7 +148,7 @@
                  use.setAttributeNodeNS(href);
                  $outro.innerHTML = `<p>${data.prompt}</p>\n<div>${data.outro}</div>`;
              }
-             $next.disabled = false;
+             $next.style.display = 'block';
          });
    }
   </script>

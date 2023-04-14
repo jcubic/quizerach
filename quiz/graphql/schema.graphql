@@ -12,8 +12,8 @@ input AddPollInput {
 type Answer {
   answer: String
   answer_id: Int!
-  option: Option!
-  option_id: Int!
+  option: Option
+  option_id: Int
   question: Question!
   question_id: Int!
   user: User!
@@ -27,6 +27,7 @@ scalar DateTime
 
 type Mutation {
   createPoll(name: String!, set_id: Int!): Poll!
+  createQuestion(intro_text: String, outro_text: String, poll_id: Int!): Question!
 }
 
 "## Option\n"

@@ -16,10 +16,10 @@ model Answer {
   user_id     Int
   question_id Int
   answer      String?  @db.Text
-  option_id   Int
+  option_id   Int?
   Question    Question @relation(fields: [question_id], references: [question_id], onUpdate: Restrict, map: "Answer_ibfk_1")
   user        User     @relation(fields: [user_id], references: [user_id], onUpdate: Restrict, map: "Answer_ibfk_2")
-  Option      Option   @relation(fields: [option_id], references: [option_id], onUpdate: Restrict, map: "Answer_ibfk_3")
+  Option      Option?  @relation(fields: [option_id], references: [option_id], onUpdate: Restrict, map: "Answer_ibfk_3")
 
   @@index([option_id], map: "option_id")
   @@index([question_id], map: "question_id")

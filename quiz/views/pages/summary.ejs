@@ -9,7 +9,7 @@
     <h1><%= title %></h1>
     <div class="progress">
       <ul>
-      <% for (let i = 0; i < questions; ++i) { %>
+      <% for (let i = 0; i < all; ++i) { %>
         <li class="selected">
             <span>
                 <svg viewBox="0 0 5.5562501 7.40833">
@@ -32,6 +32,7 @@
         <p>Odpowiedziałeś(aś) poprawnie na <%= solved %> <%= strings[pr.select(solved)] %>.</p>
         <p>Nawet jeśli nie odpowiedziałeś(aś) poprawnie na wszystkie pytania, to wspomoże to twoją pamięć.</p>
       <% } %>
+      <p>Oraz na <%= open %> <%= strings[pr.select(open)] %> otwarte.</p>
     </div>
   </main>
   <%- include('../partials/footer'); %>

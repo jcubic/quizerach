@@ -60,7 +60,7 @@ export interface NexusGenObjects {
   Answer: { // root type
     answer?: string | null; // String
     answer_id: number; // Int!
-    option_id: number; // Int!
+    option_id?: number | null; // Int
     question_id: number; // Int!
     user_id: number; // Int!
   }
@@ -110,8 +110,8 @@ export interface NexusGenFieldTypes {
   Answer: { // field return type
     answer: string | null; // String
     answer_id: number; // Int!
-    option: NexusGenRootTypes['Option']; // Option!
-    option_id: number; // Int!
+    option: NexusGenRootTypes['Option'] | null; // Option
+    option_id: number | null; // Int
     question: NexusGenRootTypes['Question']; // Question!
     question_id: number; // Int!
     user: NexusGenRootTypes['User']; // User!
@@ -119,6 +119,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     createPoll: NexusGenRootTypes['Poll']; // Poll!
+    createQuestion: NexusGenRootTypes['Question']; // Question!
   }
   Option: { // field return type
     answers: NexusGenRootTypes['Answer'][]; // [Answer!]!
@@ -176,6 +177,7 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     createPoll: 'Poll'
+    createQuestion: 'Question'
   }
   Option: { // field return type name
     answers: 'Answer'
@@ -225,6 +227,11 @@ export interface NexusGenArgTypes {
     createPoll: { // args
       name: string; // String!
       set_id: number; // Int!
+    }
+    createQuestion: { // args
+      intro_text?: string | null; // String
+      outro_text?: string | null; // String
+      poll_id: number; // Int!
     }
   }
   Query: {

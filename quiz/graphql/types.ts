@@ -90,19 +90,22 @@ export const Answer = objectType({
                 return question;
             }
         });
-        t.nonNull.field('option', {
+        t.field('option', {
             type: Option,
             resolve: async (parent, _args, ctx) => {
                 const { option_id } = parent;
-                const question = await ctx.prisma.option.findUnique({
+                if (option_id === null) {
+                    return null;
+                }
+                const option = await ctx.prisma.option.findUnique({
                     where: {
                         option_id
                     }
                 });
-                if (!question) {
+                if (!option) {
                     error(`option with id ${option_id} not found`);
                 }
-                return question;
+                return option;
             }
         });
     }
@@ -332,6 +335,23 @@ export const Mutation = extendType({
                         set_id,
                         slug,
                         name
+                    }
+                });
+            }
+        });
+        t.nonNull.field('createQuestion', {
+            type: 'Question',
+            args: {
+                poll_id: nonNull(intArg()),
+                intro_text: stringArg(),
+                outro_text: stringArg()
+            },
+            resolve(_root, { poll_id, intro_text, outro_text }, ctx) {
+                return ctx.prisma.question.create({
+                    data: {
+                        poll_id,
+                        intro_text,
+                        outro_text
                     }
                 });
             }

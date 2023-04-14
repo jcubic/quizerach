@@ -8,9 +8,10 @@ import { terminal } from './terminal';
 
 import { is_admin, is_auth } from './middleware';
 import { render_quiz, format_answer } from './quiz';
+import { is_number } from './utils';
 
 const answer_schema = z.object({
-    answer: z.string().transform((val) => parseInt(val, 10)),
+    answer: z.optional(z.string().transform((val) => parseInt(val, 10))),
     question: z.string().transform((val) => parseInt(val, 10)),
     text: z.optional(z.string())
 });
@@ -90,8 +91,12 @@ app.get('/quiz/:id/:slug?', is_auth, async function(req: Request, res: Response)
         if (!poll) {
             return res.send('404');
         }
-        const len = poll.Question.length ?? 0;
-        const solved = poll.Question.map(question => {
+        const open = poll.Question.filter(question => {
+            const answer = question.Answer[0];
+            return !answer.option_id;
+        }).length;
+        let len = poll.Question.length ?? 0;
+        let solved = poll.Question.map(question => {
             if (question.Answer.length) {
                 const answer = question.Answer[0];
                 const option = question.Option.find(option => {
@@ -100,10 +105,14 @@ app.get('/quiz/:id/:slug?', is_auth, async function(req: Request, res: Response)
                 return option?.valid;
             }
         }).filter(Boolean).length ?? 0;
+        const all = len;
+        len -= open;
         const percentage = (solved / len) * 100;
         res.render('pages/summary', {
             title: poll.set.name,
-            solved,
+            all,
+            open: open,
+            solved: solved,
             questions: len,
             percent: percentage.toFixed(1)
         });
@@ -139,6 +148,10 @@ app.post('/answer/:id', async function(req: Request, res: Response) {
         if (!req.session.email) {
             throw new Error('You need to login first');
         }
+        const user_id = await get_user_id(req.session.email);
+        if (!user_id) {
+            throw new Error('invalid user');
+        }
         const poll_id = +req.params.id;
         const poll = await prisma.poll.findFirst({
             where: { poll_id },
@@ -158,17 +171,17 @@ app.post('/answer/:id', async function(req: Request, res: Response) {
         }
         const body = result.data;
         const question = poll.Question[body.question];
-        const option = question?.Option[body.answer];
-        if (!question || !option) {
-            throw new Error('invalid reuqest, option not found');
-        }
-        const valid = option.valid;
-        const user_id = await get_user_id(req.session.email);
-        if (!user_id) {
-            throw new Error('invalid user');
-        }
+        let option_id: number | undefined;
+        let valid;
         const question_id = question.question_id;
-        const option_id = option.option_id;
+        if (is_number(body.answer)) {
+            const option = question?.Option[body.answer];
+            if (!question || !option) {
+                throw new Error('invalid reuqest, option not found');
+            }
+            valid = option.valid;
+            option_id = option.option_id;
+        }
         const answer = await prisma.answer.findFirst({
             where: {
                 user_id,
@@ -186,8 +199,8 @@ app.post('/answer/:id', async function(req: Request, res: Response) {
                 question_id,
                 option_id,
                 answer: body.text
-            },
-        })
+            }
+        });
         res.json(format_answer(question, valid));
     } catch (e) {
         res.json({error: (e as Error).message});

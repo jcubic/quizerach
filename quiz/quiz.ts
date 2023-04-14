@@ -3,7 +3,7 @@ import { Response } from 'express';
 import { Poll, Question, Option, Set, Answer } from "@prisma/client";
 
 
-import { random_pick } from './utils';
+import { random_pick, is_boolean } from './utils';
 import strings from './strings.json';
 
 type QuestionWithOptions = Question & {Option: Option[]};
@@ -16,15 +16,36 @@ type UserAnswer = {
     valid: boolean;
     prompt: string;
     outro: string;
-    answer: string | null;
+    text: string | null;
+} | {
+    outro: string;
+    text: string | null;
 } | undefined;
 
-export function format_answer(question: QuestionWithOptions, valid: boolean) {
-    return {
-        valid,
-        prompt: random_pick(valid ? strings.valid : strings.invalid),
-        outro: marked.parse(question.outro_text)
-    };
+
+export function format_answer(question: QuestionWithOptions, valid: boolean): {
+    valid: boolean;
+    prompt: string;
+    outro: string;
+};
+
+export function format_answer(question: QuestionWithOptions): {
+    outro: string;
+};
+
+export function format_answer(question: QuestionWithOptions, valid?: boolean) {
+    const outro = marked.parse(question.outro_text);
+    if (is_boolean(valid)) {
+        return {
+            valid,
+            prompt: random_pick(valid ? strings.valid : strings.invalid),
+            outro
+        };
+    } else {
+        return {
+            outro
+        };
+    }
 }
 
 export function render_quiz(res: Response, quiz: Quiz, index: number) {
@@ -40,14 +61,20 @@ export function render_quiz(res: Response, quiz: Quiz, index: number) {
         const index = question.Option.findIndex(option => {
             return option.option_id === user_answer.option_id;
         });
+        let valid;
         if (index !== -1) {
-            const valid = question.Option[index].valid;
+            valid = question.Option[index].valid;
             answer = {
                 index,
                 ...format_answer(question, valid),
                 valid,
-                answer: user_answer.answer
-            }
+                text: user_answer.answer
+            };
+        } else {
+            answer = {
+                ...format_answer(question),
+                text: user_answer.answer
+            };
         }
     }
     res.render('pages/question', {

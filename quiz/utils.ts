@@ -7,8 +7,16 @@ export function unique_token() {
     return uuid();
 }
 
+export function is_number(arg: any): arg is number {
+    return typeof arg === 'number' && !isNaN(arg);
+}
+
 export function is_string(arg: any): arg is string {
     return typeof arg === 'string';
+}
+
+export function is_boolean(arg: any): arg is boolean {
+    return typeof arg === 'boolean';
 }
 
 export function is_date(arg: any): arg is Date {
