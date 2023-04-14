@@ -27,7 +27,7 @@ scalar DateTime
 
 type Mutation {
   createPoll(name: String!, set_id: Int!): Poll!
-  createQuestion(intro_text: String, outro_text: String, poll_id: Int!): Question!
+  createQuestion(intro_text: String!, outro_text: String!, poll_id: Int!): Question!
 }
 
 "## Option\n"

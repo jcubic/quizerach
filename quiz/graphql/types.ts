@@ -343,8 +343,8 @@ export const Mutation = extendType({
             type: 'Question',
             args: {
                 poll_id: nonNull(intArg()),
-                intro_text: stringArg(),
-                outro_text: stringArg()
+                intro_text: nonNull(stringArg()),
+                outro_text: nonNull(stringArg())
             },
             resolve(_root, { poll_id, intro_text, outro_text }, ctx) {
                 return ctx.prisma.question.create({

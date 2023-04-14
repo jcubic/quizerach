@@ -8,7 +8,7 @@ import { terminal } from './terminal';
 
 import { is_admin, is_auth } from './middleware';
 import { render_quiz, format_answer } from './quiz';
-import { is_number } from './utils';
+import { is_number, is_boolean } from './utils';
 
 const answer_schema = z.object({
     answer: z.optional(z.string().transform((val) => parseInt(val, 10))),
@@ -201,7 +201,11 @@ app.post('/answer/:id', async function(req: Request, res: Response) {
                 answer: body.text
             }
         });
-        res.json(format_answer(question, valid));
+        if (is_boolean(valid)) {
+            res.json(format_answer(question, valid));
+        } else {
+            res.json(format_answer(question));
+        }
     } catch (e) {
         res.json({error: (e as Error).message});
     }

@@ -229,8 +229,8 @@ export interface NexusGenArgTypes {
       set_id: number; // Int!
     }
     createQuestion: { // args
-      intro_text?: string | null; // String
-      outro_text?: string | null; // String
+      intro_text: string; // String!
+      outro_text: string; // String!
       poll_id: number; // Int!
     }
   }
