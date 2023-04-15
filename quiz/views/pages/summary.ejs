@@ -30,9 +30,13 @@
         <p>Odpowiedziałeś(aś) poprawnie na wszystkie <%= solved %> <%= strings[pr.select(solved)] %>.</p>
       <% } else { %>
         <p>Odpowiedziałeś(aś) poprawnie na <%= solved %> <%= strings[pr.select(solved)] %>.</p>
-        <p>Nawet jeśli nie odpowiedziałeś(aś) poprawnie na wszystkie pytania, to wspomoże to twoją pamięć.</p>
       <% } %>
       <p>Oraz na <%= open %> <%= strings[pr.select(open)] %> otwarte.</p>
+      <% if (questions == solved) { %>
+        <p>Odpowiedź na te pytania powinna wspomóc twoją pamięć.</p>
+      <% } else { %>
+        <p>Mimo że nie odpowiedziałeś(aś) poprawnie na wszystkie pytania, to wspomoże to twoją pamięć.</p>
+      <% } %>
     </div>
   </main>
   <%- include('../partials/footer'); %>
