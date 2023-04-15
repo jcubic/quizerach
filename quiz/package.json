@@ -8,7 +8,7 @@
     "watch": "nodemon --transpile-only app.ts",
     "build": "yarn generate && tsc && cp -r public views graphql favicon package.json prisma yarn.lock dist/ && find dist -name '*.ts' | grep -v context.ts | xargs rm",
     "valid": "npx depngn 16",
-    "prisma:migration": "prisma migrate deploy",
+    "prisma:migration": "prisma migrate deploy && prisma generate",
     "schema": "echo -e $(get-graphql-schema http://localhost:3000/api --json) > schema.json",
     "generate": "yarn generate:prisma && yarn generate:nexus",
     "generate:nexus": "ts-node --transpile-only ./graphql/nexus",
