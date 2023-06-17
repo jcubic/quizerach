@@ -19,7 +19,7 @@ export function map_users(users: Users) {
             return answer.question.poll.poll_id;
         }), function([poll_id, answers]) {
             return [poll_id, answers.map(answer => {
-                return answer.option.valid;
+                return answer.option?.valid || true;
             })];
         });
         return { user_id, email, answers };

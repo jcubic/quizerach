@@ -185,8 +185,7 @@ app.post('/answer/:id', async function(req: Request, res: Response) {
         const answer = await prisma.answer.findFirst({
             where: {
                 user_id,
-                question_id,
-                option_id
+                question_id
             }
         });
         if (answer) {
