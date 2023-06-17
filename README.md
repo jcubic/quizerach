@@ -1,7 +1,7 @@
 # Quizerach - Quiz App
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/jcubic/quizerach/master/assets/logo.svg" alt="Quizerach Project Logo"/>
+  <a href="https://quizerach.koduj.org/"><img src="https://raw.githubusercontent.com/jcubic/quizerach/master/assets/logo.svg" alt="Quizerach Project Logo"/></a>
 </p>
 
 **Quizerach** is [Simple Open Source Quiz Maker App](https://github.com/jcubic/quizerach)
