@@ -37,10 +37,12 @@ app.use(session({
 }));
 
 app.use(with_redirect);
-app.use(limiter);
+
 app.use(morgan('combined', {
     stream: log_stream
 }));
+
+app.use(limiter);
 
 app.enable('trust proxy');
 
