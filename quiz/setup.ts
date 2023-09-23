@@ -41,6 +41,9 @@ app.use(limiter);
 app.use(morgan('combined', {
     stream: log_stream
 }));
+
+app.enable('trust proxy');
+
 app.use('/public', express.static('public'));
 app.use('/favicon', express.static('favicon'));
 

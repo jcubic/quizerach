@@ -46,6 +46,6 @@ export const ADMIN = '/admin';
 export const ADMIN_LOGIN = `${ADMIN}/login`;
 
 export const rate_limit = {
-    timer: 15 * 60 * 1000, // 15 minutes
-    requests: 500
+    timer: 5 * 60 * 1000, // 5 minutes
+    requests: 100
 };
